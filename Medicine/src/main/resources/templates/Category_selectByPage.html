@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>药品类别管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet"
+          href="./css/layui.css" media="all">
+</head>
+<body>
+<div class="demoTable">
+    <div class="layui-inline">
+        <input name="id" class="layui-input" id="demoReload"
+               placeholder="类别ID、类别名称、描述">
+    </div>
+    <button class="layui-btn" data-type="reload">查询</button>
+    <a class="layui-btn" href="./Category_toAdd" target="show">新增</a>
+
+</div>
+
+<table class="layui-hide" id="LAY_table_category" lay-filter="categoryTab"></table>
+<script id="barDemo" type="text/html">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script src="./layui.js"
+        charset="utf-8"></script>
+<script>
+    layui.use('table', function() {
+        var table = layui.table;
+
+        //方法级渲染
+        table.render({
+            elem : '#LAY_table_category', //绑定table id
+            url : '/selectByPage.category',
+            cellMinWidth : 80,
+            cols : [ [
+                {
+                    field : 'id',
+                    title : '类别ID'
+                },
+                {
+                    field : 'cname',
+                    title : '类别名称'
+                },
+                {
+                    field : 'createtime',
+                    templet : '<div>{{ Format(d.createtime,"yyyy-MM-dd")}}</div>',
+                    title : '创建时间'
+                }, {
+                    field : 'description',
+                    title : '描述'
+                }, {
+                    fixed : 'right',
+                    title : '操作',
+                    width : 180,
+                    align : 'center',
+                    toolbar : '#barDemo'
+                } ] ],
+            id : 'testReload',
+            page : {
+                // theme: '#c00'
+            },
+            limit : 10, //默认10条数据一页
+            limits : [ 10, 20, 30 ],
+            height : 632
+        });
+
+        //按条件查询，重新加载页面
+        var $ = layui.$, active = {
+            reload : function() {
+                var demoReload = $('#demoReload');
+                //执行重载
+                table.reload('testReload', {
+                    page : {
+                        curr : 1
+                        //重新从第 1 页开始
+                    },
+                    where : {
+                        likevalue : demoReload.val()
+                    }
+                });
+            }
+        };
+
+        //绑定click点击事件
+        $('.demoTable .layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //监听工具条
+        table.on('tool(categoryTab)', function(obj) {
+            var rowInfo = obj.data;
+            if (obj.event === 'del') {//删除一条记录
+                layer.confirm('确定删除' + rowInfo.cname + '的记录吗？', function(index){
+                    console.log(rowInfo);
+                    var url = "/deleteInfo.category";
+                    var args = {
+                        "id" : rowInfo.id
+                    };
+                    $.get(url, args, function(data) {
+                        if(data.state==1){
+                            //删除这一行
+                            obj.del();
+                            //关闭弹框
+                            layer.close(index);
+                            layer.msg("删除成功", {icon: 6});
+                        }else{
+                            layer.msg("删除失败", {icon: 5});
+                        }
+                    },"json");
+                });
+            } else if (obj.event === 'edit') {//修改一条记录
+                layer.open({
+                    type: 1 //Page层类型
+                    ,area: ['350px', '300px']
+                    ,btn:["确定","取消"]
+                    ,title: '编辑类别ID为'+ rowInfo.id +'的记录'
+                    ,skin: 'layui-layer-prompt'
+                    ,content: "<div class=''><input type='text' class='layui-layer-input' id='editCname' value='"+rowInfo.cname+"' placeholder='类别名称'/>"
+                    +"<br/><textarea class='layui-layer-input' style='width:220px;margin-top:5px;' placeholder='描述' id='editDescription'>"+rowInfo.description+"</textarea></div>"
+                    ,yes: function(index, layero){
+                        var url = "/editCategory.category";
+                        var args = {
+                            "id":rowInfo.id,
+                            "cname":$("#editCname").val(),
+                            "description":$("#editDescription").val()
+                        };
+                        $.post(url, args, function(data) {
+                            if(data.state==1){
+                                layer.close(index);
+                                //同步更新表格和缓存对应的值
+                                obj.update({
+                                    cname: args.cname,
+                                    description: args.description
+                                });
+                                layer.msg("修改成功", {icon: 6});
+                            }else{
+                                layer.msg("修改失败", {icon: 5});
+                            }
+                        },"json");
+                    }
+                });
+            }
+        });
+    });
+
+    //日期格式转换
+    function Format(datetime, fmt) {
+        if (parseInt(datetime) == datetime) {
+            if (datetime.length == 10) {
+                datetime = parseInt(datetime) * 1000;
+            } else if (datetime.length == 13) {
+                datetime = parseInt(datetime);
+            }
+        }
+        datetime = new Date(datetime);
+        var o = {
+            "M+" : datetime.getMonth() + 1, //月份
+            "d+" : datetime.getDate(), //日
+            "h+" : datetime.getHours(), //小时
+            "m+" : datetime.getMinutes(), //分
+            "s+" : datetime.getSeconds(), //秒
+            "q+" : Math.floor((datetime.getMonth() + 3) / 3), //季度
+            "S" : datetime.getMilliseconds()
+            //毫秒
+        };
+        if (/(y+)/.test(fmt))
+            fmt = fmt.replace(RegExp.$1, (datetime.getFullYear() + "")
+                .substr(4 - RegExp.$1.length));
+        for ( var k in o)
+            if (new RegExp("(" + k + ")").test(fmt))
+                fmt = fmt.replace(RegExp.$1,
+                    (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k])
+                        .substr(("" + o[k]).length)));
+        return fmt;
+    }
+</script>
+
+</body>
+</html>

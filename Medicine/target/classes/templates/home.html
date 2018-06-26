@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>医药管理系统后台</title>
+    <link rel="stylesheet" href="./css/layui.css">
+    <script src="./layui.js"></script>
+    <style type="text/css">
+        .layadmin-iframe {
+            verflow: hidden;
+            width: 100%;
+            height: 100%;
+            border: 0px;
+            /*position: absolute;*/
+            /*width: 100%;*/
+            /*height: 100%;*/
+            /*left: 0;*/
+            /*top: 68px;*/
+            /*right: 0;*/
+            /*bottom: 0;*/
+        }
+    </style>
+    <script src="layui/lay/modules/jquery.js"></script>
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">医药管理系统后台</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        #if ($user)
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="$!{user.headurl}" class="layui-nav-img">
+                    $!{user.name}
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">修改密码</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="logout">退了</a></li>
+        </ul>
+        #else
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item"><a href="login">登录</a></li>
+        </ul>
+        #end
+    </div>
+    #if ($user)
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">管理中枢</a>
+                    <dl class="layui-nav-child" id="page">
+                        <dd><a href="/Category_selectByPage" target="show">类别管理</a></dd>
+                        <dd><a href="/test" target="show" >药品管理</a></dd>
+                        <dd><a href="javascript:;" >购买药品</a></dd>
+                        <dd><a href="javascript:;" >销售管理</a></dd>
+                        <dd><a href="javascript:;" >系统管理</a></dd>
+                    </dl>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="layui-body">
+        <!--style="overflow: hidden;width: 100%;height: 100%;border: 0px;"-->
+        <iframe name="show" src="/Category_selectByPage" class="layadmin-iframe"></iframe>
+    </div>
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © licker
+    </div>
+    #end
+</div>
+<script type="text/javascript" src="./jquery.js"></script>
+<script>
+
+    layui.use(['element', 'form','laytpl'], function () {
+        var element = layui.element;
+        var form = layui.form;
+        var laytpl = layui.laytpl;
+        form.on('submit(formDemo)', function (data) {
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+    });
+</script>
+</body>
+</html>
