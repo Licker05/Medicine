@@ -111,11 +111,11 @@
         table.on('tool(drugTab)', function(obj) {
             var rowInfo = obj.data;
             if (obj.event === 'del') {//删除一条记录
-                layer.confirm('确定删除' + rowInfo.cname + '的记录吗？', function(index){
+                layer.confirm('确定删除' + rowInfo.drugname + '的记录吗？', function(index){
                     console.log(rowInfo);
                     var url = "/deleteInfo.drug";
                     var args = {
-                        "id" : rowInfo.id
+                        "id" : rowInfo.drugid
                     };
                     $.get(url, args, function(data) {
                         if(data.state==1){
@@ -134,14 +134,14 @@
                     type: 1 //Page层类型
                     ,area: ['350px', '300px']
                     ,btn:["确定","取消"]
-                    ,title: '编辑类别ID为'+ rowInfo.id +'的记录'
+                    ,title: '编辑类别ID为'+ rowInfo.drugid +'的记录'
                     ,skin: 'layui-layer-prompt'
                     ,content: "<div class=''><input type='text' class='layui-layer-input' id='editCname' value='"+rowInfo.cname+"' placeholder='类别名称'/>"
                     +"<br/><textarea class='layui-layer-input' style='width:220px;margin-top:5px;' placeholder='描述' id='editDescription'>"+rowInfo.description+"</textarea></div>"
                     ,yes: function(index, layero){
                         var url = "/editDrug.drug";
                         var args = {
-                            "id":rowInfo.id,
+                            "id":rowInfo.drugid,
                             "cname":$("#editCname").val(),
                             "description":$("#editDescription").val()
                         };

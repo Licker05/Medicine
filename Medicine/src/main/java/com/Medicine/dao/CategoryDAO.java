@@ -30,7 +30,8 @@ public interface CategoryDAO {
 
     @Select({"select count(*) from ",TABLE_NAME," where id like #{likeValue} or cname like #{likeValue} or description like #{likeValue}"})
     int selectCountByValue(String likeValue);
+
     @Insert({"insert into ", TABLE_NAME, "(", INSET_FIELDS,
             ") values (#{cname},#{createtime},#{description})"})
-    int addCategory(Category category);
+    int addCategory(Object object);
 }

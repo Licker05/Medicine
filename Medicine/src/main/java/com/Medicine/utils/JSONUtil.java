@@ -44,6 +44,11 @@ public class JSONUtil {
         }
         return json.toJSONString();
     }
+    public static String getStateString(int code){
+        JSONObject json = new JSONObject();
+        json.put("state",code);
+        return json.toJSONString();
+    }
     public static String getJSONString(int code,String msg,Map<String, Object> map) {
         JSONObject json = new JSONObject();
         json.put("code",code);

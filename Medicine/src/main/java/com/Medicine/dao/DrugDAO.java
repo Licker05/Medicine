@@ -4,6 +4,7 @@ import com.Medicine.model.Category;
 import com.Medicine.model.Drug;
 import com.Medicine.model.Page;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -30,4 +31,7 @@ public interface DrugDAO {
     @Delete({"delete from ", TABLE_NAME, " where id=#{id}"})
     void deleteById(int id);
 
+    @Insert({"insert into ", TABLE_NAME, "(", INSET_FIELDS,
+            ") values (#{drugnumber},#{drugname},#{drugPice},#{quantity},#{productdate},#{producer},#{categoryname})"})
+    int addDrug(Object object);
 }
