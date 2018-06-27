@@ -13,11 +13,11 @@
 <body>
 <div class="demoTable">
     <div class="layui-inline">
-        <input name="id" class="layui-input" id="demoReload"
+        <input name="id" class="layui-input" id="demoReload" style="width: 300px;"
                placeholder="类别ID、类别名称、描述">
     </div>
     <button class="layui-btn" data-type="reload">查询</button>
-    <a class="layui-btn" href="./Category_toAdd" target="show">新增</a>
+    <a class="layui-btn" href="/Category_toAdd.jsp" target="show">新增</a>
 
 </div>
 
@@ -35,7 +35,7 @@
         //方法级渲染
         table.render({
             elem : '#LAY_table_category', //绑定table id
-            url : '/selectByPage.category',
+            url : 'selectByPage.category',
             cellMinWidth : 80,
             cols : [ [
                 {
@@ -61,9 +61,7 @@
                     toolbar : '#barDemo'
                 } ] ],
             id : 'testReload',
-            page : {
-                // theme: '#c00'
-            },
+            page : true,
             limit : 10, //默认10条数据一页
             limits : [ 10, 20, 30 ],
             height : 632
@@ -98,7 +96,7 @@
             if (obj.event === 'del') {//删除一条记录
                 layer.confirm('确定删除' + rowInfo.cname + '的记录吗？', function(index){
                     console.log(rowInfo);
-                    var url = "/deleteInfo.category";
+                    var url = "deleteInfo.category";
                     var args = {
                         "id" : rowInfo.id
                     };
@@ -124,7 +122,7 @@
                     ,content: "<div class=''><input type='text' class='layui-layer-input' id='editCname' value='"+rowInfo.cname+"' placeholder='类别名称'/>"
                     +"<br/><textarea class='layui-layer-input' style='width:220px;margin-top:5px;' placeholder='描述' id='editDescription'>"+rowInfo.description+"</textarea></div>"
                     ,yes: function(index, layero){
-                        var url = "/editCategory.category";
+                        var url = "editCategory.category";
                         var args = {
                             "id":rowInfo.id,
                             "cname":$("#editCname").val(),

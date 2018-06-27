@@ -1,8 +1,7 @@
 package com.Medicine.controller;
 import com.Medicine.model.Category;
 import com.Medicine.model.HostHolder;
-import com.Medicine.service.ManageService;
-import com.Medicine.utils.JSONUtil;
+import com.Medicine.service.CategoryManageService;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,13 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 public class ManageController {
     @Autowired
-    ManageService manageService;
+    CategoryManageService categoryManageService;
     @Autowired
     HostHolder hostHolder;
     @RequestMapping(path = {"/Category_selectByPage"}, method = {RequestMethod.GET, RequestMethod.POST})
@@ -45,12 +42,12 @@ public class ManageController {
             likeValue = request.getParameter("likevalue");
             String result = null;
             if(likeValue.trim().length()>0)
-                result = manageService.getAllMesByValue(likeValue,(limit-1),(page-1)*10);
+                result = categoryManageService.getAllMesByValue(likeValue,(limit-1),(page-1)*10);
             else
-                result = manageService.getAllMes(limit,(page-1)*10);
+                result = categoryManageService.getAllMes(limit,(page-1)*10);
             return result;
         }else{
-            String result = manageService.getAllMes(limit,(page-1)*10);
+            String result = categoryManageService.getAllMes(limit,(page-1)*10);
             return result;
         }
     }
@@ -60,7 +57,7 @@ public class ManageController {
                              @RequestParam("id") int id,
                              HttpServletResponse response){
         JSONObject jsonObject = new JSONObject();
-        if(manageService.DeleteById(id)){
+        if(categoryManageService.DeleteById(id)){
             jsonObject.put("state",1);
             return jsonObject.toJSONString();
         }else{
@@ -81,7 +78,7 @@ public class ManageController {
         Category category = new Category(cname,df.format(new Date()),description);
         if(hostHolder.getUser()!=null){
             jsonObject.put("isLogin",1);
-            manageService.addCategory(category);
+            categoryManageService.addCategory(category);
         }else{
             jsonObject.put("isLogin",0);
         }
@@ -97,7 +94,7 @@ public class ManageController {
                                HttpServletResponse response){
         Category category = new Category(id,cname,"none",description);
         JSONObject jsonObject = new JSONObject();
-        if(manageService.updateNameAndDesc(category)){
+        if(categoryManageService.updateNameAndDesc(category)){
             jsonObject.put("state",1);
             return jsonObject.toJSONString();
         }else{

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ManageService implements IManageService{
+public class CategoryManageService implements IManageService{
     @Autowired
     private CategoryDAO categoryDAO;
     @Override
@@ -26,7 +26,7 @@ public class ManageService implements IManageService{
         jsonObject.put("code",0);
         jsonObject.put("msg","");
         jsonObject.put("data",categorys);
-        jsonObject.put("count",categorys.size());
+        jsonObject.put("count",categoryDAO.selectCount());
         return jsonObject.toJSONString();
     }
     @Override
@@ -39,11 +39,9 @@ public class ManageService implements IManageService{
         jsonObject.put("code",0);
         jsonObject.put("msg","");
         jsonObject.put("data",categorys);
-        jsonObject.put("count",categorys.size());
+        jsonObject.put("count",categoryDAO.selectCountByValue(LikeValue));
         return jsonObject.toJSONString();
     }
-
-    @Override
     public boolean addCategory(Category category) {
         try{
             categoryDAO.addCategory(category);
@@ -53,8 +51,6 @@ public class ManageService implements IManageService{
             return false;
         }
     }
-
-    @Override
     public boolean updateNameAndDesc(Category category) {
         try{
             categoryDAO.updateNameAndDesc(category);

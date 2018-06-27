@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>药品类别管理</title>
+    <title>药品管理</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport"
@@ -17,11 +17,11 @@
                placeholder="类别ID、类别名称、描述">
     </div>
     <button class="layui-btn" data-type="reload">查询</button>
-    <a class="layui-btn" href="/Category_toAdd.jsp" target="show">新增</a>
+    <a class="layui-btn" href="./Drug_toAdd" target="show">新增</a>
 
 </div>
 
-<table class="layui-hide" id="LAY_table_category" lay-filter="categoryTab"></table>
+<table class="layui-hide" id="LAY_table_drug" lay-filter="drugTab"></table>
 <script id="barDemo" type="text/html">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
@@ -34,37 +34,54 @@
 
         //方法级渲染
         table.render({
-            elem : '#LAY_table_category', //绑定table id
-            url : 'selectByPage.category',
+            elem : '#LAY_table_drug', //绑定table id
+            url : '/selectByPage.drug',
             cellMinWidth : 80,
             cols : [ [
                 {
-                    field : 'id',
-                    title : '类别ID'
+                    field : 'drugid',
+                    title : '药品ID'
                 },
                 {
-                    field : 'cname',
-                    title : '类别名称'
+                    field : 'drugnumber',
+                    title : '药品编号'
                 },
                 {
-                    field : 'createtime',
-                    templet : '<div>{{ Format(d.createtime,"yyyy-MM-dd")}}</div>',
-                    title : '创建时间'
-                }, {
-                    field : 'description',
-                    title : '描述'
+                    field: 'drugname',
+                    title: '药品名称'
+                },
+                {
+                    field: 'drugPice',
+                    title: '药品单价'
+                },
+                {
+                    field: 'quantity',
+                    title: '库存数量'
+                },
+                {
+                    field : 'productdate',
+                    // templet : '<div>{{ Format(d.createtime,"yyyy-MM-dd")}}</div>',
+                    title : '生产日期'
+                },
+                {
+                    field : 'producer',
+                    title : '厂商'
+                },
+                {
+                    field : 'categoryname',
+                    title : '所属类别'
                 }, {
                     fixed : 'right',
                     title : '操作',
-                    width : 180,
+                    width : 140,
                     align : 'center',
                     toolbar : '#barDemo'
                 } ] ],
             id : 'testReload',
             page : true,
             limit : 10, //默认10条数据一页
-            limits : [ 10, 20, 30 ],
-            height : 632
+            limits : [ 10, 20, 30 ,50 ,100],
+            height : 480
         });
 
         //按条件查询，重新加载页面
@@ -91,14 +108,14 @@
         });
 
         //监听工具条
-        table.on('tool(categoryTab)', function(obj) {
+        table.on('tool(drugTab)', function(obj) {
             var rowInfo = obj.data;
             if (obj.event === 'del') {//删除一条记录
-                layer.confirm('确定删除' + rowInfo.cname + '的记录吗？', function(index){
+                layer.confirm('确定删除' + rowInfo.drugname + '的记录吗？', function(index){
                     console.log(rowInfo);
-                    var url = "deleteInfo.category";
+                    var url = "/deleteInfo.drug";
                     var args = {
-                        "id" : rowInfo.id
+                        "id" : rowInfo.drugid
                     };
                     $.get(url, args, function(data) {
                         if(data.state==1){
@@ -117,14 +134,14 @@
                     type: 1 //Page层类型
                     ,area: ['350px', '300px']
                     ,btn:["确定","取消"]
-                    ,title: '编辑类别ID为'+ rowInfo.id +'的记录'
+                    ,title: '编辑类别ID为'+ rowInfo.drugid +'的记录'
                     ,skin: 'layui-layer-prompt'
                     ,content: "<div class=''><input type='text' class='layui-layer-input' id='editCname' value='"+rowInfo.cname+"' placeholder='类别名称'/>"
                     +"<br/><textarea class='layui-layer-input' style='width:220px;margin-top:5px;' placeholder='描述' id='editDescription'>"+rowInfo.description+"</textarea></div>"
                     ,yes: function(index, layero){
-                        var url = "editCategory.category";
+                        var url = "/editDrug.drug";
                         var args = {
-                            "id":rowInfo.id,
+                            "id":rowInfo.drugid,
                             "cname":$("#editCname").val(),
                             "description":$("#editDescription").val()
                         };
