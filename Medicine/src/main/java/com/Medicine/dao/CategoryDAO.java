@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 @Mapper
-public interface CategoryDAO {
+public interface CategoryDAO extends BaseDAO{
     String TABLE_NAME = "category";
     String INSET_FIELDS = " cname, createtime, description";
     String SELECT_FIELDS = "id, cname, createtime, description";

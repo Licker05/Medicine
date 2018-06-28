@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 @Mapper
-public interface DrugDAO {
+public interface DrugDAO extends BaseDAO{
     String TABLE_NAME = "drug";
     String INSET_FIELDS = " drugnumber, drugname, drugPice,quantity,productdate,producer,categoryname";
     String SELECT_FIELDS = "drugid, drugnumber, drugname, drugPice , quantity , productdate , producer , categoryname";
@@ -37,4 +37,10 @@ public interface DrugDAO {
     @Insert({"insert into ", TABLE_NAME, "(", INSET_FIELDS,
             ") values (#{drugnumber},#{drugname},#{drugPice},#{quantity},#{productdate},#{producer},#{categoryname})"})
     int addDrug(Object object);
+
+    @Select({"select quantity from ",TABLE_NAME," where drugid=#{id}"})
+    int selectQtityById(int id);
+
+    @Update({"update ",TABLE_NAME," set quantity=#{quantity} where drugid=#{drugid}"})
+    void updateQtityById(@Param("quantity") int quantity,@Param("drugid") int drugid);
 }

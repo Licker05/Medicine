@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>购买药品</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet"
+          href="./css/layui.css" media="all">
+</head>
+<body>
+<div class="demoTable">
+    <div class="layui-inline">
+        <input nname="id" class="layui-input" id="selectLike" style="width: 300px"
+               placeholder="药品编号、药品名称、厂商、类别id">
+    </div>
+    <button class="layui-btn" data-type="reload">查询</button>
+
+</div>
+
+<table class="layui-hide" id="LAY_table_buy" lay-filter="buyTab"></table>
+<script id="barDemo" type="text/html">
+    <a class="layui-btn layui-btn-xs" lay-event="buy">立即购买</a>
+</script>
+<script src="./layui.js"
+        charset="utf-8"></script>
+<script>
+    layui.use('table', function() {
+        var table = layui.table;
+
+        //方法级渲染
+        table.render({
+            elem : '#LAY_table_buy', //绑定table id
+            url : 'selectByPage.Drug',
+            cellMinWidth : 80,
+            cols : [ [
+                {
+                    field : 'drugid',
+                    title : '药品ID'
+                },
+                {
+                    field : 'drugnumber',
+                    title : '药品编号'
+                },
+                {
+                    field: 'drugname',
+                    title: '药品名称'
+                },
+                {
+                    field: 'drugPice',
+                    title: '药品单价'
+                },
+                {
+                    field: 'quantity',
+                    title: '库存数量'
+                },
+                {
+                    field : 'productdate',
+                    // templet : '<div>{{ Format(d.createtime,"yyyy-MM-dd")}}</div>',
+                    title : '生产日期'
+                },
+                {
+                    field: 'producer',
+                    title: '厂商'
+                },
+                {
+                    field : 'categoryname',
+                    title : '所属类别'
+                }, {
+                    fixed : 'right',
+                    title : '操作',
+                    width : 180,
+                    align : 'center',
+                    toolbar : '#barDemo'
+                } ] ],
+            id : 'testReload',
+            page : true,
+            limit : 10, //默认10条数据一页
+            limits : [ 10, 20, 30 ],
+            height : 632
+        });
+
+        //按条件查询，重新加载页面
+        var $ = layui.$, active = {
+            reload : function() {
+                var demoReload = $('#selectLike');
+                //执行重载
+                table.reload('testReload', {
+                    page : {
+                        curr : 1
+                        //重新从第 1 页开始
+                    },
+                    where : {
+                        likevalue : demoReload.val()
+                    }
+                });
+            }
+        };
+        //绑定click点击事件
+        $('.demoTable .layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        table.on('tool(buyTab)',function (obj) {
+            var rowInfo = obj.data;
+            if(obj.event === 'buy') {
+                layer.open({
+                    type:1,
+                    btn:"立即购买",
+                    title:'购买药品',
+                    skin: 'layui-layer-prompt',
+                    area:['500px','450px'],
+                    content:
+                    "  <div class=\"layui-form-item\">\n" +
+                    "    <label class=\"layui-form-label\">药品编号：</label>\n" +
+                    "    <div class=\"layui-input-block\">\n" +
+                    "      <input type=\"text\" name=\"title\" value='"+rowInfo.drugnumber+"' disabled=\"disabled\" autocomplete=\"off\" class=\"layui-input\">\n" +
+                    "    </div>" +
+                    "    <label class=\"layui-form-label\">药品名称：</label>\n" +
+                    "    <div class=\"layui-input-block\">\n" +
+                    "      <input type=\"text\" name=\"title\" value='"+rowInfo.drugname+"' disabled=\"disabled\" autocomplete=\"off\" class=\"layui-input\">\n" +
+                    "    </div>" +
+                    "    <label class=\"layui-form-label\">药品单价：</label>\n" +
+                    "    <div class=\"layui-input-block\">\n" +
+                    "      <input type=\"text\" name=\"title\" value='"+rowInfo.drugPice+"' disabled=\"disabled\" autocomplete=\"off\" class=\"layui-input\">\n" +
+                    "    </div>" +
+                    "    <label class=\"layui-form-label\">库存数量：</label>\n" +
+                    "    <div class=\"layui-input-block\">\n" +
+                    "      <input type=\"text\" name=\"title\" value='"+rowInfo.quantity+"' disabled=\"disabled\" autocomplete=\"off\" class=\"layui-input\">\n" +
+                    "    </div>" +
+                    "    <label class=\"layui-form-label\">生产日期：</label>\n" +
+                    "    <div class=\"layui-input-block\">\n" +
+                    "      <input type=\"text\" name=\"title\" value='"+rowInfo.productdate+"' disabled=\"disabled\" autocomplete=\"off\" class=\"layui-input\">\n" +
+                    "    </div>" +
+                    "    <label class=\"layui-form-label\">厂商：</label>\n" +
+                    "    <div class=\"layui-input-block\">\n" +
+                    "      <input type=\"text\" name=\"title\" value='"+rowInfo.producer+"' disabled=\"disabled\" autocomplete=\"off\" class=\"layui-input\">\n" +
+                    "    </div>" +
+                    "    <label class=\"layui-form-label\">所属类别：</label>\n" +
+                    "    <div class=\"layui-input-block\">\n" +
+                    "      <input type=\"text\" name=\"title\" value='"+rowInfo.categoryname+"' disabled=\"disabled\" autocomplete=\"off\" class=\"layui-input\">\n" +
+                    "    </div>" +
+                    "    <label class=\"layui-form-label\">购买数量：</label>\n" +
+                    "    <div class=\"layui-input-block\">\n" +
+                    "      <input id='editQuantity' type='number' name=\"title\" autocomplete=\"off\" class=\"layui-input\">\n" +
+                    "    </div>" +
+                    "</div>"
+                    ,yes:function (index, layero) {
+                        var url = "editBuy.buy";
+                        var args = {
+                            "id":rowInfo.drugid,
+                            "drugnumber":rowInfo.drugnumber,
+                            // "drugname":$("#editDrugName").val(),
+                            "drugPice":rowInfo.drugPice,
+                            // "quantity":rowInfo.quantty,
+                            "editQuantity":$("#editQuantity").val(),
+                            // "productdate":$("#editProductdate").val()
+                        };
+                        $.post(url,args,function (data) {
+                            if(data.state == 1){
+                                layer.close(index);
+                                obj.update({
+                                    quantity: data.quantity
+                                });
+                                layer.msg("购买成功");
+
+                            }else{
+                                layer.msg("库存不足，购买失败");
+                            }
+                        },"json")
+                    }
+                })
+            }
+        })
+
+
+    });
+
+    //日期格式转换
+    function Format(datetime, fmt) {
+        if (parseInt(datetime) == datetime) {
+            if (datetime.length == 10) {
+                datetime = parseInt(datetime) * 1000;
+            } else if (datetime.length == 13) {
+                datetime = parseInt(datetime);
+            }
+        }
+        datetime = new Date(datetime);
+        var o = {
+            "M+" : datetime.getMonth() + 1, //月份
+            "d+" : datetime.getDate(), //日
+            "h+" : datetime.getHours(), //小时
+            "m+" : datetime.getMinutes(), //分
+            "s+" : datetime.getSeconds(), //秒
+            "q+" : Math.floor((datetime.getMonth() + 3) / 3), //季度
+            "S" : datetime.getMilliseconds()
+            //毫秒
+        };
+        if (/(y+)/.test(fmt))
+            fmt = fmt.replace(RegExp.$1, (datetime.getFullYear() + "")
+                .substr(4 - RegExp.$1.length));
+        for ( var k in o)
+            if (new RegExp("(" + k + ")").test(fmt))
+                fmt = fmt.replace(RegExp.$1,
+                    (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k])
+                        .substr(("" + o[k]).length)));
+        return fmt;
+    }
+</script>
+
+</body>
+</html>

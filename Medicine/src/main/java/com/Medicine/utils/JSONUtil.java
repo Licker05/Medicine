@@ -35,7 +35,12 @@ public class JSONUtil {
         json.put("msg", msg);
         return json.toJSONString();
     }
-
+    public static String getObjectJSONString(int code, String key ,Object msg) {
+        JSONObject json = new JSONObject();
+        json.put("state", code);
+        json.put(key, msg);
+        return json.toJSONString();
+    }
     public static String getJSONString(int code, Map<String, Object> map) {
         JSONObject json = new JSONObject();
         json.put("code", code);

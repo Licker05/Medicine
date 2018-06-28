@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 @Mapper
-public interface SaleDAO {
+public interface SaleDAO extends BaseDAO{
     String TABLE_NAME = "sale";
     String INSET_FIELDS = " selldate, drugnumber, sellquantity,sellPrice,userid";
     String SELECT_FIELDS = "sellrecordnumber, selldate, drugnumber, sellquantity , sellPrice , userid ";
@@ -36,4 +36,5 @@ public interface SaleDAO {
     @Insert({"insert into ", TABLE_NAME, "(", INSET_FIELDS,
             ") values (#{selldate},#{drugnumber},#{sellquantity},#{sellPrice},#{userid})"})
     int addSale(Object object);
+
 }
