@@ -18,43 +18,102 @@
 
 <form class="layui-form" action="">
     <div class="layui-form-item">
-        <label class="layui-form-label">类别名称</label>
+        <label class="layui-form-label">药品编号</label>
         <div class="layui-input-block">
-            <input name="cname" class="layui-input" type="text"
-                   placeholder="请输入类别名称" autocomplete="off" lay-verify="required">
+            <input name="drugnumber" class="layui-input" type="text"
+                   placeholder="请输入药品编号" autocomplete="off" lay-verify="required">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">药品名称</label>
+        <div class="layui-input-block">
+            <input type="text" class="layui-input" name="drugname" placeholder="请输入药品名称"/>
         </div>
     </div>
 
-    <div class="layui-form-item layui-form-text">
-        <label class="layui-form-label">类别描述</label>
+    <div class="layui-form-item">
+        <label class="layui-form-label">药品价格</label>
         <div class="layui-input-block">
-            <textarea class="layui-textarea" name="description" placeholder="请输入描述"></textarea>
+            <input name="drugPice" class="layui-input" type="text"
+                   placeholder="请输入药品价格" autocomplete="off" lay-verify="required">
+        </div>
+    </div>
+    <div class="layui-form-item ">
+        <label class="layui-form-label">药品数量</label>
+        <div class="layui-input-block">
+            <input type="text" class="layui-input" name="quantity" placeholder="请输入药品数量"/>
+        </div>
+    </div>
+    <div class="layui-form-item ">
+        <label class="layui-form-label">生产日期</label>
+        <div class="layui-input-block">
+            <input type="text" id="productdate" class="layui-input" name="productdate" placeholder="请输入生产日期"/>
+        </div>
+    </div>
+    <div class="layui-form-item ">
+        <label class="layui-form-label">厂商</label>
+        <div class="layui-input-block">
+            <input type="text" class="layui-input" name="producer" placeholder="请输入厂商"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">所属类别</label>
+        <div class="layui-input-block">
+            <select name="categoryname"  id="categoryname" lay-verify="required">
+            </select>
         </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-filter="addCategory" lay-submit="">立即提交</button>
+            <button class="layui-btn" lay-filter="addDrug" lay-submit="">立即提交</button>
             <button class="layui-btn layui-btn-primary" type="reset">重置</button>
         </div>
     </div>
+
+
 </form>
 
 <script src="./layui.js"
         charset="utf-8"></script>
 <script>
-    layui.use([ 'form', 'layer','jquery' ], function() {
+
+    layui.use([ 'form', 'layer','jquery','laydate' ], function() {
         var form = layui.form, layer = layui.layer;
         var $ = layui.jquery;
+        var laydate = layui.laydate;
         //监听提交
-        form.on('submit(addCategory)', function(obj) {
-            var url = "addCategory.category";
+        $(document).ready(function () {
+            $.ajax({
+                url:"getCategoryTypes",
+                type:"get",
+                success:function (data) {
+                    var jsonobject = JSON.parse(data);
+                    console.log(jsonobject.code,jsonobject.data);
+                    $.each(jsonobject.data,function (n,value) {
+                        $("#categoryname").append("<option value="+value+">"+value+"</option>");
+                    });
+                    form.render();
+                }
+            })
+        });
+        laydate.render({
+            elem:'#productdate'
+        })
+        form.on('submit(addDrug)', function(obj) {
+            console.log("123");
+            var url = "addInfo.drug";
             var args = {
-                "cname":obj.field.cname,
-                "description":obj.field.description
+                "drugnumber":obj.field.drugnumber,
+                "drugname":obj.field.drugname,
+                "drugPice":obj.field.drugPice,
+                "quantity":obj.field.quantity,
+                "productdate":obj.field.productdate,
+                "producer":obj.field.producer,
+                "categoryname":obj.field.categoryname
             };
             $.post(url, args, function(data) {
                 if (data.isLogin == 1){
-                    location.href = "/Category_selectByPage";
+                    location.href = "/Drug_selectByPage";
                 }else{
                     layer.msg('新增失败');
                 }
@@ -63,6 +122,5 @@
         });
     });
 </script>
-
 </body>
 </html>

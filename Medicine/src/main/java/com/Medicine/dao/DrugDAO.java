@@ -19,16 +19,16 @@ public interface DrugDAO {
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " limit #{limit} offset #{offset}"})
     List<Drug> selectByLimitAndOffset(Page page);
 
-    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, "where drugid like #{likeValue} or drugname like #{likeValue} limit #{limit} offset #{offset}"})
+    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, "where drugid like CONCAT(CONCAT('%', #{likeValue}),'%') or drugname like CONCAT(CONCAT('%', #{likeValue}),'%') or categoryname like CONCAT(CONCAT('%', #{likeValue}),'%') limit #{limit} offset #{offset}"})
     List<Drug> selectByLikeValue(Page page);
 
-    @Select({"select count(*) from ",TABLE_NAME," where drugid like #{likeValue} or drugname like #{likeValue}"})
+    @Select({"select count(*) from ",TABLE_NAME," where drugid like CONCAT(CONCAT('%', #{likeValue}),'%') or drugname like CONCAT(CONCAT('%', #{likeValue}),'%') or categoryname like CONCAT(CONCAT('%', #{likeValue}),'%')"})
     int selectCountByValue(String likeValue);
 
     @Select({"select count(*) from ",TABLE_NAME})
     int selectCount();
 
-    @Delete({"delete from ", TABLE_NAME, " where id=#{id}"})
+    @Delete({"delete from ", TABLE_NAME, " where drugid=#{id}"})
     void deleteById(int id);
 
     @Insert({"insert into ", TABLE_NAME, "(", INSET_FIELDS,

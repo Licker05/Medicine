@@ -22,16 +22,19 @@ public interface CategoryDAO {
     @Delete({"delete from ", TABLE_NAME, " where id=#{id}"})
     void deleteById(int id);
 
-    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, "where id like #{likeValue} or cname like #{likeValue} or description like #{likeValue} limit #{limit} offset #{offset}"})
+    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, "where id like CONCAT(CONCAT('%', #{likeValue}),'%') or cname like CONCAT(CONCAT('%', #{likeValue}),'%') or description like CONCAT(CONCAT('%', #{likeValue}),'%') limit #{limit} offset #{offset}"})
     List<Category> selectByLikeValue(Page page);
 
     @Select({"select count(*) from ",TABLE_NAME})
     int selectCount();
 
-    @Select({"select count(*) from ",TABLE_NAME," where id like #{likeValue} or cname like #{likeValue} or description like #{likeValue}"})
+    @Select({"select count(*) from ",TABLE_NAME," where id like CONCAT(CONCAT('%', #{likeValue}),'%') or cname like CONCAT(CONCAT('%', #{likeValue}),'%') or description like CONCAT(CONCAT('%', #{likeValue}),'%')"})
     int selectCountByValue(String likeValue);
 
     @Insert({"insert into ", TABLE_NAME, "(", INSET_FIELDS,
             ") values (#{cname},#{createtime},#{description})"})
     int addCategory(Object object);
+
+    @Select({"select cname from ",TABLE_NAME})
+    List<String> selectTypes();
 }

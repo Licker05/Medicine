@@ -24,53 +24,15 @@ public class CategoryManageController {
     @Autowired
     HostHolder hostHolder;
 
-    @RequestMapping(path = {"/addCategory.category"}, method = {RequestMethod.GET, RequestMethod.POST})
-    @ResponseBody
-    public String addCategory(Model model,
-                              @RequestParam("cname") String cname,
-                              @RequestParam("description") String description,
-                              HttpServletResponse response){
-        JSONObject jsonObject  = new JSONObject();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
-        Category category = new Category(cname,df.format(new Date()),description);
-        if(hostHolder.getUser()!=null){
-            jsonObject.put("isLogin",1);
-            categoryManageService.addObject(category);
-        }else{
-            jsonObject.put("isLogin",0);
-        }
 
+    @RequestMapping(path = {"/getCategoryTypes"}, method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public String  getCategoryTypes(){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("code",0);
+        jsonObject.put("data",categoryManageService.getCategoryTypes());
         return jsonObject.toJSONString();
     }
-
-
-
-
-
-    @RequestMapping(path = {"/selectByPage.category"}, method = {RequestMethod.GET, RequestMethod.POST})
-    @ResponseBody
-    public String selectByPage(Model model,
-                               HttpServletRequest request,
-                               HttpServletResponse response){
-
-        int limit = Integer.parseInt(request.getParameter("limit"));
-        int page = Integer.parseInt(request.getParameter("page"));
-        String likeValue;
-        if(request.getParameter("likevalue")!=null){
-            likeValue = request.getParameter("likevalue");
-            String result = null;
-            if(likeValue.trim().length()>0)
-                result = categoryManageService.getAllMesByValue(Category.class,likeValue,(limit-1),(page-1)*10);
-            else
-                result = categoryManageService.getAllMes(Category.class,limit,(page-1)*10);
-            return result;
-        }else{
-            String result = categoryManageService.getAllMes(Category.class,limit,(page-1)*10);
-            return result;
-        }
-    }
-
-
     @RequestMapping(path = {"/editCategory.category"}, method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String EditById(Model model,

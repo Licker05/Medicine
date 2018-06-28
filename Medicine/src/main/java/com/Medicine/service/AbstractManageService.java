@@ -26,7 +26,7 @@ public abstract class AbstractManageService {
             JSONObject jsonObject = new JSONObject();
             if(type.getSimpleName().equals("Drug")){
                 jsonObject.put("data",drugDAO.selectByLimitAndOffset(page));;
-               jsonObject.put("count",drugDAO.selectCount());
+                jsonObject.put("count",drugDAO.selectCount());
             }else{
                 jsonObject.put("data",categoryDAO.selectByLimitAndOffset(page));;
                 jsonObject.put("count",categoryDAO.selectCount());
@@ -77,8 +77,8 @@ public abstract class AbstractManageService {
         try{
             if(object.getClass().getSimpleName().equals("Category")){
                 categoryDAO.addCategory(object);
-            }else{
-
+            }else if(object.getClass().getSimpleName().equals("Drug")){
+                drugDAO.addDrug(object);
             }
             return true;
         }catch (Exception e){

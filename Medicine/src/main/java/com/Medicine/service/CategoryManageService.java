@@ -16,15 +16,9 @@ import java.util.Map;
 public class CategoryManageService extends AbstractManageService implements IManageService{
     @Autowired
     private CategoryDAO categoryDAO;
-//    public boolean addCategory(Category category) {
-//        try{
-//            categoryDAO.addCategory(category);
-//            return true;
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
+    public List<String> getCategoryTypes(){
+        return categoryDAO.selectTypes();
+    }
     public boolean updateNameAndDesc(Category category) {
         try{
             categoryDAO.updateNameAndDesc(category);

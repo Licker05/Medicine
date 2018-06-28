@@ -79,6 +79,17 @@ public class Drug {
     }
 
     private int drugid;
+
+    public Drug(String drugnumber, String drugname, double drugPice, int quantity, String productdate, String producer, String categoryname) {
+        this.drugnumber = drugnumber;
+        this.drugname = drugname;
+        this.drugPice = drugPice;
+        this.quantity = quantity;
+        this.productdate = productdate;
+        this.producer = producer;
+        this.categoryname = categoryname;
+    }
+
     private String drugnumber;
     private String drugname;
     private double drugPice;
