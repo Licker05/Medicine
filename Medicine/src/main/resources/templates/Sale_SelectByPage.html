@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>药品管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet"
+          href="./css/layui.css" media="all">
+</head>
+<body>
+<div class="demoTable">
+    <div class="layui-inline">
+        <input name="id" class="layui-input" id="demoReload" style="width: 300px;"
+               placeholder="销售记录编号,药品编号,购买人ID">
+    </div>
+    <button class="layui-btn" data-type="reload">查询</button>
+</div>
+
+<table class="layui-hide" id="LAY_table_sale" lay-filter="saleTab"></table>
+<script src="./layui.js"
+        charset="utf-8"></script>
+<script>
+    layui.use('table', function() {
+        var table = layui.table;
+
+        //方法级渲染
+        table.render({
+            elem : '#LAY_table_sale', //绑定table id
+            url : '/selectByPage.Sale',
+            cellMinWidth : 80,
+            cols : [ [
+                {
+                    field : 'sellrecordnumber',
+                    title : '销售记录编号'
+                },
+                {
+                    field : 'selldate',
+                    title : '销售日期'
+                },
+                {
+                    field: 'drugnumber',
+                    title: '药品编号'
+                },
+                {
+                    field: 'sellquantity',
+                    title: '销售数量'
+                },
+                {
+                    field: 'sellPrice',
+                    title: '销售价格'
+                },
+                {
+                    field : 'userid',
+                    // templet : '<div>{{ Format(d.createtime,"yyyy-MM-dd")}}</div>',
+                    title : '购买人ID'
+                },
+                ]],
+            id : 'testReload',
+            page : true,
+            limit : 10, //默认10条数据一页
+            limits : [ 10, 20, 30 ,50 ,100],
+            height : 480
+        });
+
+        //按条件查询，重新加载页面
+        var $ = layui.$, active = {
+            reload : function() {
+                var demoReload = $('#demoReload');
+                //执行重载
+                table.reload('testReload', {
+                    page : {
+                        curr : 1
+                        //重新从第 1 页开始
+                    },
+                    where : {
+                        likevalue : demoReload.val()
+                    }
+                });
+            }
+        };
+        //绑定click点击事件
+        $('.demoTable .layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+    //日期格式转换
+    function Format(datetime, fmt) {
+        if (parseInt(datetime) == datetime) {
+            if (datetime.length == 10) {
+                datetime = parseInt(datetime) * 1000;
+            } else if (datetime.length == 13) {
+                datetime = parseInt(datetime);
+            }
+        }
+        datetime = new Date(datetime);
+        var o = {
+            "M+" : datetime.getMonth() + 1, //月份
+            "d+" : datetime.getDate(), //日
+            "h+" : datetime.getHours(), //小时
+            "m+" : datetime.getMinutes(), //分
+            "s+" : datetime.getSeconds(), //秒
+            "q+" : Math.floor((datetime.getMonth() + 3) / 3), //季度
+            "S" : datetime.getMilliseconds()
+            //毫秒
+        };
+        if (/(y+)/.test(fmt))
+            fmt = fmt.replace(RegExp.$1, (datetime.getFullYear() + "")
+                .substr(4 - RegExp.$1.length));
+        for ( var k in o)
+            if (new RegExp("(" + k + ")").test(fmt))
+                fmt = fmt.replace(RegExp.$1,
+                    (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k])
+                        .substr(("" + o[k]).length)));
+        return fmt;
+    }
+</script>
+</body>
+</html>

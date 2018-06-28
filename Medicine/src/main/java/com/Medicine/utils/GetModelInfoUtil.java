@@ -2,6 +2,7 @@ package com.Medicine.utils;
 
 import com.Medicine.model.Category;
 import com.Medicine.model.Drug;
+import com.Medicine.model.Sale;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
@@ -15,6 +16,8 @@ public class GetModelInfoUtil {
                 return getCategoryInfo(request);
             }else if(typeClass.getSimpleName().equals("Drug")){
                 return getDrugInfo(request);
+            }else if(typeClass.getSimpleName().equals("Sale")){
+                return getSaleInfo(request);
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -56,5 +59,15 @@ public class GetModelInfoUtil {
         else
             drug = new Drug(drugnumber,drugname,drugPice,quantity,df.format(new Date()),producer,categoryname);
         return drug;
+    }
+    public static Sale getSaleInfo(HttpServletRequest request){
+        int sellrecordnumber  = Integer.parseInt(request.getParameter("sellrecordnumber"));
+        String selldate  = request.getParameter("selldate");
+        String drugnumber  = request.getParameter("drugnumber");
+        int sellquantity  = Integer.parseInt(request.getParameter("sellquantity"));
+        int sellPrice  = Integer.parseInt(request.getParameter("sellPrice"));
+        int userid  = Integer.parseInt(request.getParameter("userid"));
+        Sale sale = new Sale(sellrecordnumber,selldate,drugnumber,sellquantity,sellPrice,userid);
+        return sale;
     }
 }
