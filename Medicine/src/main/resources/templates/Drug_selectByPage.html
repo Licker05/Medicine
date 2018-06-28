@@ -35,7 +35,7 @@
         //方法级渲染
         table.render({
             elem : '#LAY_table_drug', //绑定table id
-            url : '/selectByPage.drug',
+            url : '/selectByPage.Drug',
             cellMinWidth : 80,
             cols : [ [
                 {
@@ -113,7 +113,7 @@
             if (obj.event === 'del') {//删除一条记录
                 layer.confirm('确定删除' + rowInfo.drugname + '的记录吗？', function(index){
                     console.log(rowInfo);
-                    var url = "/deleteInfo.drug";
+                    var url = "/deleteInfo.Drug";
                     var args = {
                         "id" : rowInfo.drugid
                     };
@@ -130,36 +130,37 @@
                     },"json");
                 });
             } else if (obj.event === 'edit') {//修改一条记录
-                layer.open({
-                    type: 1 //Page层类型
-                    ,area: ['350px', '300px']
-                    ,btn:["确定","取消"]
-                    ,title: '编辑类别ID为'+ rowInfo.drugid +'的记录'
-                    ,skin: 'layui-layer-prompt'
-                    ,content: "<div class=''><input type='text' class='layui-layer-input' id='editCname' value='"+rowInfo.cname+"' placeholder='类别名称'/>"
-                    +"<br/><textarea class='layui-layer-input' style='width:220px;margin-top:5px;' placeholder='描述' id='editDescription'>"+rowInfo.description+"</textarea></div>"
-                    ,yes: function(index, layero){
-                        var url = "/editDrug.drug";
-                        var args = {
-                            "id":rowInfo.drugid,
-                            "cname":$("#editCname").val(),
-                            "description":$("#editDescription").val()
-                        };
-                        $.post(url, args, function(data) {
-                            if(data.state==1){
-                                layer.close(index);
-                                //同步更新表格和缓存对应的值
-                                obj.update({
-                                    cname: args.cname,
-                                    description: args.description
-                                });
-                                layer.msg("修改成功", {icon: 6});
-                            }else{
-                                layer.msg("修改失败", {icon: 5});
-                            }
-                        },"json");
-                    }
-                });
+                // layer.open({
+                //     type: 1 //Page层类型
+                //     ,area: ['350px', '300px']
+                //     ,btn:["确定","取消"]
+                //     ,title: '编辑类别ID为'+ rowInfo.drugid +'的记录'
+                //     ,skin: 'layui-layer-prompt'
+                //     ,content: "<div class=''><input type='text' class='layui-layer-input' id='editdrugname value='"+rowInfo.drugname+"' placeholder='药品名称'/><br>"
+                //         +"<dic class=''><input type='text' class='layui-layer-input' id='editdrugPice' value='"+rowInfo.drugPice+"' placeholder='药品单价'/><br>"
+                //     ,yes: function(index, layero){
+                //         var url = "/editDrug.drug";
+                //         var args = {
+                //             "id":rowInfo.drugid,
+                //             "cname":$("#editCname").val(),
+                //             "description":$("#editDescription").val()
+                //         };
+                //         $.post(url, args, function(data) {
+                //             if(data.state==1){
+                //                 layer.close(index);
+                //                 //同步更新表格和缓存对应的值
+                //                 obj.update({
+                //                     cname: args.cname,
+                //                     description: args.description
+                //                 });
+                //                 layer.msg("修改成功", {icon: 6});
+                //             }else{
+                //                 layer.msg("修改失败", {icon: 5});
+                //             }
+                //         },"json");
+                //     }
+                // });
+                location.href="/Drug_toEdit"+rowInfo.drugid;
             }
         });
     });
@@ -195,6 +196,5 @@
         return fmt;
     }
 </script>
-
 </body>
 </html>

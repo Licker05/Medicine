@@ -3,10 +3,7 @@ package com.Medicine.dao;
 import com.Medicine.model.Category;
 import com.Medicine.model.Drug;
 import com.Medicine.model.Page;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -16,11 +13,17 @@ public interface DrugDAO {
     String INSET_FIELDS = " drugnumber, drugname, drugPice,quantity,productdate,producer,categoryname";
     String SELECT_FIELDS = "drugid, drugnumber, drugname, drugPice , quantity , productdate , producer , categoryname";
 
+    @Update({"update ",TABLE_NAME," set drugnumber=#{drugnumber},drugname=#{drugname},drugPice=#{drugPice},quantity=#{quantity},productdate=#{productdate},producer=#{producer},categoryname=#{categoryname} where drugid=#{drugid}"})
+    void updateInfo(Object object);
+
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " limit #{limit} offset #{offset}"})
     List<Drug> selectByLimitAndOffset(Page page);
 
-    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, "where drugid like CONCAT(CONCAT('%', #{likeValue}),'%') or drugname like CONCAT(CONCAT('%', #{likeValue}),'%') or categoryname like CONCAT(CONCAT('%', #{likeValue}),'%') limit #{limit} offset #{offset}"})
+    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where drugid like CONCAT(CONCAT('%', #{likeValue}),'%') or drugname like CONCAT(CONCAT('%', #{likeValue}),'%') or categoryname like CONCAT(CONCAT('%', #{likeValue}),'%') limit #{limit} offset #{offset}"})
     List<Drug> selectByLikeValue(Page page);
+
+    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where drugid=#{id}"})
+    Drug selectById(int id);
 
     @Select({"select count(*) from ",TABLE_NAME," where drugid like CONCAT(CONCAT('%', #{likeValue}),'%') or drugname like CONCAT(CONCAT('%', #{likeValue}),'%') or categoryname like CONCAT(CONCAT('%', #{likeValue}),'%')"})
     int selectCountByValue(String likeValue);

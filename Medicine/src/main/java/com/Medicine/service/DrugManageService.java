@@ -15,4 +15,9 @@ import java.util.Map;
 
 @Service
 public class DrugManageService extends AbstractManageService implements IManageService{
+    @Autowired
+    DrugDAO drugDAO;
+    public Drug selectById(int id){
+        return drugDAO.selectById(id);
+    }
 }

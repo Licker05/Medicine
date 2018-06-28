@@ -13,7 +13,7 @@
 <body>
 <fieldset class="layui-elem-field layui-field-title"
           style="margin-top: 20px;">
-    <legend>新增药品类别</legend>
+    <legend>新增药品</legend>
 </fieldset>
 
 <form class="layui-form" action="">
@@ -101,7 +101,7 @@
         })
         form.on('submit(addDrug)', function(obj) {
             console.log("123");
-            var url = "addInfo.drug";
+            var url = "addInfo.Drug";
             var args = {
                 "drugnumber":obj.field.drugnumber,
                 "drugname":obj.field.drugname,
@@ -112,7 +112,7 @@
                 "categoryname":obj.field.categoryname
             };
             $.post(url, args, function(data) {
-                if (data.isLogin == 1){
+                if (data.state == 1){
                     location.href = "/Drug_selectByPage";
                 }else{
                     layer.msg('新增失败');

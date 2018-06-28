@@ -47,13 +47,13 @@
         var $ = layui.jquery;
         //监听提交
         form.on('submit(addCategory)', function(obj) {
-            var url = "addInfo.category";
+            var url = "addInfo.Category";
             var args = {
                 "cname":obj.field.cname,
                 "description":obj.field.description
             };
             $.post(url, args, function(data) {
-                if (data.isLogin == 1){
+                if (data.state == 1){
                     location.href = "/Category_selectByPage";
                 }else{
                     layer.msg('新增失败');

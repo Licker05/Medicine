@@ -19,14 +19,5 @@ public class CategoryManageService extends AbstractManageService implements IMan
     public List<String> getCategoryTypes(){
         return categoryDAO.selectTypes();
     }
-    public boolean updateNameAndDesc(Category category) {
-        try{
-            categoryDAO.updateNameAndDesc(category);
-            return true;
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
-        }
 
-    }
 }

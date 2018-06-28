@@ -17,7 +17,7 @@ public interface CategoryDAO {
     List<Category> selectByLimitAndOffset(Page page);
 
     @Update({"update ",TABLE_NAME," set cname=#{cname},description=#{description} where id=#{id}"})
-    void updateNameAndDesc(Category category);
+    void updateInfo(Object object);
 
     @Delete({"delete from ", TABLE_NAME, " where id=#{id}"})
     void deleteById(int id);

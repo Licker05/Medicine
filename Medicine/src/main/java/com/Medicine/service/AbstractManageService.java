@@ -87,4 +87,17 @@ public abstract class AbstractManageService {
         }
 
     }
+    public boolean updateInfo(Object object) {
+        try{
+            if(object.getClass().getSimpleName().equals("Category")){
+                categoryDAO.updateInfo(object);
+            }else if(object.getClass().getSimpleName().equals("Drug")){
+                drugDAO.updateInfo(object);
+            }
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

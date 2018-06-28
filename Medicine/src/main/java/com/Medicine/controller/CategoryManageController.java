@@ -24,7 +24,6 @@ public class CategoryManageController {
     @Autowired
     HostHolder hostHolder;
 
-
     @RequestMapping(path = {"/getCategoryTypes"}, method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String  getCategoryTypes(){
@@ -42,7 +41,7 @@ public class CategoryManageController {
                            HttpServletResponse response){
         Category category = new Category(id,cname,"none",description);
         JSONObject jsonObject = new JSONObject();
-        if(categoryManageService.updateNameAndDesc(category)){
+        if(categoryManageService.updateInfo(category)){
             jsonObject.put("state",1);
             return jsonObject.toJSONString();
         }else{
