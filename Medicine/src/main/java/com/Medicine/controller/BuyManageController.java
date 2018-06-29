@@ -32,11 +32,12 @@ public class BuyManageController {
                                @RequestParam("id") int drugid,
                                @RequestParam("editQuantity") int editQuantity,
                                @RequestParam("drugnumber") String drugnumber,
-                               @RequestParam("drugPice") int drugPice,
+                               @RequestParam("drugPice") double drugPice,
                                HttpServletResponse response){
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String date = df.format(new Date());
-        Sale sale = new Sale(date,drugnumber,editQuantity,editQuantity * drugPice,hostHolder.getUser().getId());
+        double price = editQuantity * drugPice;
+        Sale sale = new Sale(date,drugnumber,editQuantity,price,hostHolder.getUser().getId());
         if(buyManageService.selectQuantity(drugid)>=editQuantity){
             buyManageService.updateQuantity(editQuantity,drugid);
             buyManageService.addObject(sale);

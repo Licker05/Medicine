@@ -3,9 +3,12 @@ package com.Medicine.service;
 import com.Medicine.dao.CategoryDAO;
 import com.Medicine.dao.DrugDAO;
 import com.Medicine.dao.SaleDAO;
+import com.Medicine.dao.UserDAO;
 import com.Medicine.model.Category;
 import com.Medicine.model.Drug;
 import com.Medicine.model.Page;
+import com.Medicine.model.User;
+import com.Medicine.utils.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,6 +24,8 @@ public abstract class AbstractManageService {
     DrugDAO drugDAO;
     @Autowired
     SaleDAO saleDAO;
+    @Autowired
+    UserDAO userDAO;
     public String getAllMes(Class type,int limit, int offset){
         try{
             List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
@@ -36,6 +41,9 @@ public abstract class AbstractManageService {
             } else if(type.getSimpleName().equals("Sale")){
                 jsonObject.put("data",saleDAO.selectByLimitAndOffset(page));;
                 jsonObject.put("count",saleDAO.selectCount());
+            }else if(type.getSimpleName().equals("User")){
+                jsonObject.put("data",userDAO.selectByLimitAndOffset(page));;
+                jsonObject.put("count",userDAO.selectCount());
             }
             jsonObject.put("code",0);
             jsonObject.put("msg","");
@@ -53,13 +61,30 @@ public abstract class AbstractManageService {
                 categoryDAO.deleteById(id);
             else if(type.getSimpleName().equals("Sale"))
                 saleDAO.deleteById(id);
+            else if(type.getSimpleName().equals("User"))
+                userDAO.deleteById(id);
             return true;
         }catch (Exception e){
             e.printStackTrace();
             return false;
         }
     }
-
+    public Object selectById(Class type,int id){
+        try{
+            if(type.getSimpleName().equals("Drug"))
+                return drugDAO.selectById(id);
+            else if(type.getSimpleName().equals("Category"))
+                return categoryDAO.selectById(id);
+            else if(type.getSimpleName().equals("Sale"))
+                return saleDAO.selectById(id);
+            else if(type.getSimpleName().equals("User"))
+                return userDAO.selectById(id);
+            return null;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
     public String getAllMesByValue(Class type,String LikeValue, int limit, int offset) {
         try{
             List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
@@ -77,6 +102,9 @@ public abstract class AbstractManageService {
             }else if(type.getSimpleName().equals("Sale")){
                 jsonObject.put("data", saleDAO.selectByLikeValue(page));
                 jsonObject.put("count", saleDAO.selectCountByValue(LikeValue));
+            }else if(type.getSimpleName().equals("User")){
+                jsonObject.put("data", userDAO.selectByLikeValue(page));
+                jsonObject.put("count", userDAO.selectCountByValue(LikeValue));
             }
             return jsonObject.toJSONString();
         }catch (Exception e){
@@ -92,6 +120,8 @@ public abstract class AbstractManageService {
                 drugDAO.addDrug(object);
             }else if(object.getClass().getSimpleName().equals("Sale")){
                 saleDAO.addSale(object);
+            }else if(object.getClass().getSimpleName().equals("User")){
+                userDAO.addUser(object);
             }
             return true;
         }catch (Exception e){
@@ -108,6 +138,15 @@ public abstract class AbstractManageService {
                 drugDAO.updateInfo(object);
             }else if(object.getClass().getSimpleName().equals("Sale")){
                 saleDAO.updateInfo(object);
+            }else if(object.getClass().getSimpleName().equals("User")){
+                if(((User)object).getName()==null){
+                    String newPass = ((User)object).getPassword();
+                    User user = userDAO.selectById(((User)object).getId());
+                    user.setPassword(JSONUtil.MD5(newPass+user.getSalt()));
+                    userDAO.updatePassword(user);
+                }else{
+                    userDAO.updateInfo(object);
+                }
             }
             return true;
         }catch (Exception e){

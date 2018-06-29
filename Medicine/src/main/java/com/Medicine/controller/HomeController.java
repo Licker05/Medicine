@@ -25,5 +25,9 @@ public class HomeController {
         model.addAttribute("pop", pop);
         return "home";
     }
+    @RequestMapping(path = {"welcome"}, method = {RequestMethod.GET, RequestMethod.POST})
+    public String welcome(){
+        return "welcome";
+    }
 
 }

@@ -1,13 +1,19 @@
 package com.Medicine.utils;
 
+import com.Medicine.dao.UserDAO;
 import com.Medicine.model.Category;
 import com.Medicine.model.Drug;
 import com.Medicine.model.Sale;
+import com.Medicine.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
+@Service
 public class GetModelInfoUtil {
     public static Object getModelInfo(String type,HttpServletRequest request){
         try {
@@ -18,6 +24,8 @@ public class GetModelInfoUtil {
                 return getDrugInfo(request);
             }else if(typeClass.getSimpleName().equals("Sale")){
                 return getSaleInfo(request);
+            }else if(typeClass.getSimpleName().equals("User")){
+                return getUserInfo(request);
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -54,7 +62,7 @@ public class GetModelInfoUtil {
         String producer  = request.getParameter("producer");
         String categoryname  = request.getParameter("categoryname");
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
-        if(flag==0)
+        if(flag==1)
             drug = new Drug(drugid,drugnumber,drugname,drugPice,quantity,df.format(new Date()),producer,categoryname);
         else
             drug = new Drug(drugnumber,drugname,drugPice,quantity,df.format(new Date()),producer,categoryname);
@@ -65,9 +73,43 @@ public class GetModelInfoUtil {
         String selldate  = request.getParameter("selldate");
         String drugnumber  = request.getParameter("drugnumber");
         int sellquantity  = Integer.parseInt(request.getParameter("sellquantity"));
-        int sellPrice  = Integer.parseInt(request.getParameter("sellPrice"));
+        double sellPrice  = Double.parseDouble(request.getParameter("sellPrice"));
         int userid  = Integer.parseInt(request.getParameter("userid"));
         Sale sale = new Sale(sellrecordnumber,selldate,drugnumber,sellquantity,sellPrice,userid);
         return sale;
+    }
+    public static User getUserInfo(HttpServletRequest request){
+        if(request.getParameter("id")!=null){
+            if(request.getParameter("name")==null){
+                int id = Integer.parseInt(request.getParameter("id"));
+                String newPass = request.getParameter("pass");
+                User user = new User();
+                user.setId(id);
+                user.setPassword(newPass);
+                return user;
+            }else{
+                int id = Integer.parseInt(request.getParameter("id"));
+                String name = request.getParameter("name");
+                String nickname = request.getParameter("nickname");
+                String phone = request.getParameter("phone");
+                String email = request.getParameter("email");
+                String level = request.getParameter("level");
+                User user = new User(id,name,nickname,phone,email,level);
+                return user;
+            }
+
+        }else{
+            String name = request.getParameter("name");
+            String nickname = request.getParameter("nickname");
+            String password = request.getParameter("password");
+            String phone = request.getParameter("phone");
+            String email = request.getParameter("email");
+            String level = request.getParameter("level");
+            String salt = UUID.randomUUID().toString().substring(0,5);
+            String headurl = "http://p8wefufch.bkt.clouddn.com/295660dbcf514ab49bde6f31e6286fad.jpg";
+            password = JSONUtil.MD5(password+salt);
+            User user = new User(name,nickname,password,salt,headurl,phone,email,level);
+            return user;
+        }
     }
 }

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>药品管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet"
+          href="./css/layui.css" media="all">
+</head>
+<body>
+<div class="demoTable">
+    <div class="layui-inline">
+        <input name="id" class="layui-input" id="demoReload" style="width: 300px;"
+               placeholder="用户名、用户昵称、联系方式">
+    </div>
+    <button class="layui-btn" data-type="reload">查询</button>
+    <a class="layui-btn" href="./User_toAdd" target="show">新增</a>
+
+</div>
+
+<table class="layui-hide" id="LAY_table_user" lay-filter="userTab"></table>
+<script id="barDemo" type="text/html">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="reset">重置密码</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script src="./layui.js"
+        charset="utf-8">
+</script>
+<script id="edit" type="text/html">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">新密码</label>
+            <div class="layui-input-block">
+                <input id="editpass" class="layui-input" type="password"
+                       placeholder="请输入新密码" autocomplete="off" lay-verify="required">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">重复新密码</label>
+            <div class="layui-input-block">
+                <input id="reeditpass" class="layui-input" type="password"
+                       placeholder="重复新密码" autocomplete="off" lay-verify="required">
+            </div>
+        </div>
+    </form>
+</script>
+<script>
+    layui.use('table', function() {
+        var table = layui.table;
+
+        //方法级渲染
+        table.render({
+            elem : '#LAY_table_user', //绑定table id
+            url : '/selectByPage.User',
+            cellMinWidth : 80,
+            cols : [ [
+                {
+                    field : 'id',
+                    title : '用户id'
+                },
+                {
+                    field : 'name',
+                    title : '用户名'
+                },
+                {
+                    field: 'nickname',
+                    title: '用户昵称'
+                },
+                {
+                    field: 'phone',
+                    title: '联系方式'
+                },
+                {
+                    field: 'level',
+                    title: '用户类型'
+                }, {
+                    fixed : 'right',
+                    title : '操作',
+                    width : 210,
+                    align : 'center',
+                    toolbar : '#barDemo'
+                } ] ],
+            id : 'testReload',
+            page : true,
+            limit : 10, //默认10条数据一页
+            limits : [ 10, 20, 30 ,50 ,100],
+            height : 480
+        });
+
+        //按条件查询，重新加载页面
+        var $ = layui.$, active = {
+            reload : function() {
+                var demoReload = $('#demoReload');
+                //执行重载
+                table.reload('testReload', {
+                    page : {
+                        curr : 1
+                        //重新从第 1 页开始
+                    },
+                    where : {
+                        likevalue : demoReload.val()
+                    }
+                });
+            }
+        };
+
+        //绑定click点击事件
+        $('.demoTable .layui-btn').on('click', function() {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //监听工具条
+        table.on('tool(userTab)', function(obj) {
+            var rowInfo = obj.data;
+            if (obj.event === 'del') {//删除一条记录
+                layer.confirm('确定删除' + rowInfo.name + '的记录吗？', function(index){
+                    console.log(rowInfo);
+                    var url = "/deleteInfo.User";
+                    var args = {
+                        "id" : rowInfo.id
+                    };
+                    $.get(url, args, function(data) {
+                        if(data.state==1){
+                            //删除这一行
+                            obj.del();
+                            //关闭弹框
+                            layer.close(index);
+                            layer.msg("删除成功", {icon: 6});
+                        }else{
+                            layer.msg("删除失败", {icon: 5});
+                        }
+                    },"json");
+                });
+            } else if (obj.event === 'edit') {//修改一条记录
+                // layer.open({
+                //     type: 1 //Page层类型
+                //     ,area: ['350px', '300px']
+                //     ,btn:["确定","取消"]
+                //     ,title: '编辑类别ID为'+ rowInfo.drugid +'的记录'
+                //     ,skin: 'layui-layer-prompt'
+                //     ,content: "<div class=''><input type='text' class='layui-layer-input' id='editdrugname value='"+rowInfo.drugname+"' placeholder='药品名称'/><br>"
+                //         +"<dic class=''><input type='text' class='layui-layer-input' id='editdrugPice' value='"+rowInfo.drugPice+"' placeholder='药品单价'/><br>"
+                //     ,yes: function(index, layero){
+                //         var url = "/editDrug.drug";
+                //         var args = {
+                //             "id":rowInfo.drugid,
+                //             "cname":$("#editCname").val(),
+                //             "description":$("#editDescription").val()
+                //         };
+                //         $.post(url, args, function(data) {
+                //             if(data.state==1){
+                //                 layer.close(index);
+                //                 //同步更新表格和缓存对应的值
+                //                 obj.update({
+                //                     cname: args.cname,
+                //                     description: args.description
+                //                 });
+                //                 layer.msg("修改成功", {icon: 6});
+                //             }else{
+                //                 layer.msg("修改失败", {icon: 5});
+                //             }
+                //         },"json");
+                //     }
+                // });
+                location.href="/User_toEdit"+rowInfo.id;
+            } else if(obj.event === 'reset'){
+                layer.open({
+                    type: 1 //Page层类型
+                    ,area: ['350px', '300px']
+                    ,btn:["确定","取消"]
+                    ,title: '重置用户ID为'+ rowInfo.id +'的密码'
+                    ,skin: 'layui-layer-prompt'
+                    ,content:$('#edit').html()
+                    ,yes: function(index, layero){
+                        if($('#editpass').val()!=$('#reeditpass').val())
+                        {
+                            layer.msg("两次密码不一致", {icon: 5});
+                            return ;
+                        }
+                        var url = "updateInfo.User";
+                        var args = {
+                            "id":rowInfo.id,
+                            "pass":$("#editpass").val()
+                        };
+                        $.post(url, args, function(data) {
+                            if(data.state==1){
+                                layer.close(index);
+                                layer.msg("重置成功", {icon: 6});
+                            }else{
+                                layer.msg("重置失败", {icon: 5});
+                            }
+                        },"json");
+                    }
+                });
+            }
+        });
+    });
+
+    //日期格式转换
+    function Format(datetime, fmt) {
+        if (parseInt(datetime) == datetime) {
+            if (datetime.length == 10) {
+                datetime = parseInt(datetime) * 1000;
+            } else if (datetime.length == 13) {
+                datetime = parseInt(datetime);
+            }
+        }
+        datetime = new Date(datetime);
+        var o = {
+            "M+" : datetime.getMonth() + 1, //月份
+            "d+" : datetime.getDate(), //日
+            "h+" : datetime.getHours(), //小时
+            "m+" : datetime.getMinutes(), //分
+            "s+" : datetime.getSeconds(), //秒
+            "q+" : Math.floor((datetime.getMonth() + 3) / 3), //季度
+            "S" : datetime.getMilliseconds()
+            //毫秒
+        };
+        if (/(y+)/.test(fmt))
+            fmt = fmt.replace(RegExp.$1, (datetime.getFullYear() + "")
+                .substr(4 - RegExp.$1.length));
+        for ( var k in o)
+            if (new RegExp("(" + k + ")").test(fmt))
+                fmt = fmt.replace(RegExp.$1,
+                    (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k])
+                        .substr(("" + o[k]).length)));
+        return fmt;
+    }
+</script>
+
+</body>
+</html>

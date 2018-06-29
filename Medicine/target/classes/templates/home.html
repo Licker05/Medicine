@@ -54,11 +54,15 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a class="" href="javascript:;">管理中枢</a>
                     <dl class="layui-nav-child" id="page">
+                        #if ($!{user.level}!='普通用户')
                         <dd><a href="/Category_selectByPage" target="show">类别管理</a></dd>
                         <dd><a href="/Drug_selectByPage" target="show" >药品管理</a></dd>
+                        #end
                         <dd><a href="/Buy_selectByPage" target="show">购买药品</a></dd>
+                        #if ($!{user.level}!='普通用户')
                         <dd><a href="/Sale_selectByPage" target="show">销售管理</a></dd>
-                        <dd><a href="javascript:;" target="show">系统管理</a></dd>
+                        <dd><a href="/User_selectByPage" target="show">系统管理</a></dd>
+                        #end
                     </dl>
                 </li>
             </ul>
@@ -66,7 +70,7 @@
     </div>
     <div class="layui-body">
         <!--style="overflow: hidden;width: 100%;height: 100%;border: 0px;"-->
-        <iframe name="show" src="/Category_selectByPage" class="layadmin-iframe"></iframe>
+        <iframe name="show" src="/welcome" class="layadmin-iframe"></iframe>
     </div>
     <div class="layui-footer">
         <!-- 底部固定区域 -->

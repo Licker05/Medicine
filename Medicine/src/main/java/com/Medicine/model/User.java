@@ -58,14 +58,61 @@ public class User {
         this.email = email;
     }
 
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
+    public User(int id, String name, String nickname, String phone, String level) {
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+        this.nickname = nickname;
+        this.level = level;
+    }
+    public User(){
+
+    }
     private int id;
+
+    public User(String name, String nickname, String password, String salt, String headurl, String phone, String email, String level) {
+        this.name = name;
+        this.nickname = nickname;
+        this.password = password;
+        this.salt = salt;
+        this.headurl = headurl;
+        this.phone = phone;
+        this.email = email;
+        this.level = level;
+    }
+
+    public User(int id, String name, String nickname, String phone, String email, String level) {
+        this.id = id;
+        this.name = name;
+        this.nickname = nickname;
+        this.phone = phone;
+        this.email = email;
+        this.level = level;
+    }
+
     private String name;
+    private String nickname;
     private String password;
     private String salt;
     private String headurl;
     private String phone;
     private String email;
-
-
-
+    private String level;
 }

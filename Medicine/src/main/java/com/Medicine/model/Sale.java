@@ -34,11 +34,11 @@ public class Sale {
         this.sellquantity = sellquantity;
     }
 
-    public int getSellPrice() {
+    public double getSellPrice() {
         return sellPrice;
     }
 
-    public void setSellPrice(int sellPrice) {
+    public void setSellPrice(double sellPrice) {
         this.sellPrice = sellPrice;
     }
 
@@ -50,7 +50,7 @@ public class Sale {
         this.userid = userid;
     }
 
-    public Sale(Integer sellrecordnumber, String selldate, String drugnumber, Integer sellquantity, Integer sellPrice, Integer userid) {
+    public Sale(Integer sellrecordnumber, String selldate, String drugnumber, Integer sellquantity, Double sellPrice, Integer userid) {
         this.sellrecordnumber = sellrecordnumber;
         this.selldate = selldate;
         this.drugnumber = drugnumber;
@@ -59,7 +59,7 @@ public class Sale {
         this.userid = userid;
     }
 
-    public Sale(String selldate, String drugnumber, Integer sellquantity, Integer sellPrice, Integer userid) {
+    public Sale(String selldate, String drugnumber, Integer sellquantity, Double sellPrice, Integer userid) {
         this.selldate = selldate;
         this.drugnumber = drugnumber;
         this.sellquantity = sellquantity;
@@ -71,7 +71,7 @@ public class Sale {
     private String selldate;
     private String drugnumber;
     private int sellquantity;
-    private int sellPrice;
+    private double sellPrice;
     private int userid;
 
 }

@@ -92,7 +92,7 @@ public class ManageController {
             Class typeClass = Class.forName("com.Medicine.model."+type);
             if(likeValue!=null && likeValue.trim().length()>0){
                 likeValue = request.getParameter("likevalue");
-                return manageService.getAllMesByValue(typeClass,likeValue,(limit-1),(page-1)*10);
+                return manageService.getAllMesByValue(typeClass,likeValue,limit,(page-1)*10);
             }else{
                 return manageService.getAllMes(typeClass,limit,(page-1)*10);
             }

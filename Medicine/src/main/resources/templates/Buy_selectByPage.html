@@ -153,11 +153,8 @@
                         var args = {
                             "id":rowInfo.drugid,
                             "drugnumber":rowInfo.drugnumber,
-                            // "drugname":$("#editDrugName").val(),
                             "drugPice":rowInfo.drugPice,
-                            // "quantity":rowInfo.quantty,
                             "editQuantity":$("#editQuantity").val(),
-                            // "productdate":$("#editProductdate").val()
                         };
                         $.post(url,args,function (data) {
                             if(data.state == 1){

@@ -1,9 +1,6 @@
 package com.Medicine.dao;
 
-import com.Medicine.model.Category;
-import com.Medicine.model.LoginTicket;
-import com.Medicine.model.Page;
-import com.Medicine.model.User;
+import com.Medicine.model.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -37,4 +34,7 @@ public interface CategoryDAO extends BaseDAO{
 
     @Select({"select cname from ",TABLE_NAME})
     List<String> selectTypes();
+
+    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where id=#{id}"})
+    Category selectById(int id);
 }
