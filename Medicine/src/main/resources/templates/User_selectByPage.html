@@ -182,6 +182,10 @@
                             layer.msg("两次密码不一致", {icon: 5});
                             return ;
                         }
+                        if($('#editpass').val().trim().length<6){
+                            layer.msg("密码长度必须大于6位", {icon: 5});
+                            return ;
+                        }
                         var url = "updateInfo.User";
                         var args = {
                             "id":rowInfo.id,

@@ -77,6 +77,10 @@
         var $ = layui.jquery;
         var laydate = layui.laydate;
         form.on('submit(EditUser)', function(obj) {
+            if($("input[name='keleyicom']").val().trim().length<6){
+                layer.msg("用户名必须大于等于6位", {icon: 5});
+                return ;
+            }
             var url = "updateInfo.User";
             var args = {
                 "id":obj.field.id,
