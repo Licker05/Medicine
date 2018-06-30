@@ -149,6 +149,11 @@
                     "    </div>" +
                     "</div>"
                     ,yes:function (index, layero) {
+                        if($("#editQuantity").val()<0 || $("#editQuantity").val()>2147483647)
+                        {
+                            layer.msg("购买数量错误",{icon:5});
+                            return ;
+                        }
                         var url = "editBuy.buy";
                         var args = {
                             "id":rowInfo.drugid,

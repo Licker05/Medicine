@@ -46,28 +46,6 @@ public class LoginController {
             return JSONUtil.getJSONString(1, "登录异常");
         }
     }
-    @RequestMapping(path={"/register"},method = {RequestMethod.GET,RequestMethod.POST})
-    public String register(){
-        return "register";
-    }
-    @RequestMapping(path={"/reg"},method = {RequestMethod.GET,RequestMethod.POST})
-    @ResponseBody
-    public String reg(Model model, @RequestParam("username") String username,
-                      @RequestParam("password") String password,
-                      @RequestParam("cellphone") String cellphone,
-                      @RequestParam("email") String email,
-                      HttpServletResponse response){
-        Map<String, Object> map = userService.register(username, password,cellphone,email);
-        if(!map.containsKey("msg")){
-            if((int)map.get("RegCode")==1){
-                return JSONUtil.getJSONString(0,"success");
-            }else{
-                return JSONUtil.getJSONString(-1,map.get("msg").toString());
-            }
-        }else{
-            return JSONUtil.getJSONString(-1,map.get("msg").toString());
-        }
-    }
     @RequestMapping(path = {"/logout"}, method = {RequestMethod.GET, RequestMethod.POST})
     public String logout(@CookieValue("ticket") String ticket) {
         userService.logout(ticket);

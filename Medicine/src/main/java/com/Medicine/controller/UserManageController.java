@@ -4,15 +4,21 @@ import com.Medicine.dao.UserDAO;
 import com.Medicine.model.Drug;
 import com.Medicine.model.User;
 import com.Medicine.service.ManageService;
+import com.Medicine.service.QiniuService;
 import com.Medicine.service.UserManageService;
+import com.Medicine.utils.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.ui.Model;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.HashMap;
 @Controller
 public class UserManageController {
@@ -20,6 +26,14 @@ public class UserManageController {
     UserDAO userDAO;
     @Autowired
     UserManageService userManageService;
+    @Autowired
+    QiniuService qiniuService;
+    @RequestMapping(path = {"/user/info/{userId}"}, method = {RequestMethod.GET, RequestMethod.POST})
+    public String index(Model model,
+                        @PathVariable("userId") int userId) {
+        return "info";
+    }
+
     @RequestMapping(path = "/User_toEdit{id}",method = {RequestMethod.GET,RequestMethod.POST})
     public ModelAndView EdiUser(@PathVariable("id") int id,
             HttpServletResponse response){
@@ -33,6 +47,48 @@ public class UserManageController {
         }catch (Exception e){
             e.printStackTrace();
             return null;
+        }
+    }
+
+
+    @RequestMapping(path = {"/image"}, method = {RequestMethod.GET})
+    @ResponseBody
+    public void getImage(@RequestParam("name") String imageName,
+                         HttpServletResponse response) {
+        try {
+            response.setContentType("image/jpeg");
+            StreamUtils.copy(new FileInputStream(new
+                    File(JSONUtil.IMAGE_DIR + imageName)), response.getOutputStream());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    @RequestMapping(path = {"/inform"},method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public String inform(Model model, HttpServletRequest request,
+                         HttpServletResponse res){
+        String username = request.getParameter("username");
+        String nickname = request.getParameter("nickname");
+        String headurl = request.getParameter("headurl");
+        String cellphone = request.getParameter("cellphone");
+        String email = request.getParameter("email");
+        User user = new User(username,nickname,headurl,cellphone,email);
+        return userManageService.updateSelfInfo(user);
+
+    }
+
+    @RequestMapping(path = {"/uploadImage/"}, method = {RequestMethod.POST})
+    @ResponseBody
+    public String uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
+            String fileUrl = qiniuService.saveImage(file);
+            if (fileUrl == null) {
+                return JSONUtil.getJSONString(1, "上传图片失败");
+            }
+            System.out.println(fileUrl);
+            return JSONUtil.getJSONString(0, fileUrl);
+        } catch (Exception e) {
+            return JSONUtil.getJSONString(1, "上传失败");
         }
     }
 }

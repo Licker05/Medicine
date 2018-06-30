@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -34,18 +35,18 @@ public class GetModelInfoUtil {
     }
     public static Category getCategoryInfo(HttpServletRequest request){
         int flag = 0, id = 0;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Category category;
         if(request.getParameter("id")!=null)
             flag=1;
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
         if(flag==1)
         id = Integer.parseInt(request.getParameter("id"));
         String cname = request.getParameter("cname");
         String description = request.getParameter("description");
         if(flag==1)
-            category = new Category(id,cname,df.format(new Date()),description);
+            category = new Category(id,cname,sdf.format(new Date()),description);
         else
-            category = new Category(cname,df.format(new Date()),description);
+            category = new Category(cname,sdf.format(new Date()),description);
         return category;
     }
     public static Drug getDrugInfo(HttpServletRequest request) {
@@ -55,22 +56,22 @@ public class GetModelInfoUtil {
             flag = 1;
         if(flag==1)
             drugid = Integer.parseInt(request.getParameter("drugid"));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String drugnumber  = request.getParameter("drugnumber");
         String drugname  = request.getParameter("drugname");
         double drugPice  = Double.parseDouble(request.getParameter("drugPice"));
         int  quantity  = Integer.parseInt(request.getParameter("quantity"));
         String producer  = request.getParameter("producer");
         String categoryname  = request.getParameter("categoryname");
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
         if(flag==1)
-            drug = new Drug(drugid,drugnumber,drugname,drugPice,quantity,df.format(new Date()),producer,categoryname);
+            drug = new Drug(drugid,drugnumber,drugname,drugPice,quantity,sdf.format(new Date()),producer,categoryname);
         else
-            drug = new Drug(drugnumber,drugname,drugPice,quantity,df.format(new Date()),producer,categoryname);
+            drug = new Drug(drugnumber,drugname,drugPice,quantity,sdf.format(new Date()),producer,categoryname);
         return drug;
     }
     public static Sale getSaleInfo(HttpServletRequest request){
         int sellrecordnumber  = Integer.parseInt(request.getParameter("sellrecordnumber"));
-        String selldate  = request.getParameter("selldate");
+        String selldate = request.getParameter("selldate");
         String drugnumber  = request.getParameter("drugnumber");
         int sellquantity  = Integer.parseInt(request.getParameter("sellquantity"));
         double sellPrice  = Double.parseDouble(request.getParameter("sellPrice"));
@@ -83,9 +84,11 @@ public class GetModelInfoUtil {
             if(request.getParameter("name")==null){
                 int id = Integer.parseInt(request.getParameter("id"));
                 String newPass = request.getParameter("pass");
+                String level = request.getParameter("level");
                 User user = new User();
                 user.setId(id);
                 user.setPassword(newPass);
+                user.setLevel(level);
                 return user;
             }else{
                 int id = Integer.parseInt(request.getParameter("id"));

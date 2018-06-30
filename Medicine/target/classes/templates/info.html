@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>设置我的资料</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/css/layui.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <script src="/jquery.js"></script>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">设置我的资料</div>
+                <div class="layui-card-body" pad15>
+
+                    <div id="uploadForm" class="layui-form" lay-filter="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户名</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" value="$!{user.name}" readonly class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">不可修改。一般用于后台登入名</div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">昵称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="nickname" value="$!{user.nickname}" lay-verify="nickname" autocomplete="off" maxlength="10" placeholder="请输入昵称" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">头像</label>
+                            <div class="layui-input-inline">
+                                <input name="avatar" lay-verify="required" id="LAY_avatarSrc" placeholder="图片地址" value="$!{user.headurl}" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline layui-btn-container" style="width: auto;">
+                                <button onclick="f.click();" type="button" class="layui-btn layui-btn-primary" id="LAY_avatarUpload">
+                                    <i class="layui-icon">&#xe67c;</i>上传头像
+                                </button>
+                                <input type="file" id="f" name="f" onchange="upload(this);" style="display:none"/>
+                                <button class="layui-btn layui-btn-primary" onclick="lookImage();" layadmin-event="avartatPreview">查看头像</button >
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">手机</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="cellphone" value="$!{user.phone}" lay-verify="phone" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">邮箱</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="email" value="$!{user.email}" lay-verify="email" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="setmyinfo">确认修改</button>
+                                <button type="reset" class="layui-btn layui-btn-primary">重新填写</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/layui.js"></script>
+<script>
+    function lookImage(){
+        window.open(document.getElementById("LAY_avatarSrc").value);
+    }
+    document.getElementById("remarks").value="$!{userinfo.remark}";
+    function upload(){
+        var fileM=document.getElementById("f");
+        var fileObj=fileM.files[0];
+        //创建formdata对象，formData用来存储表单的数据，表单数据时以键值对形式存储的。
+        var formData=new FormData();
+        formData.append('file',fileObj);
+        $.ajax({
+            url:"/uploadImage/",
+            data:formData,
+            type:"post",
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success:function (data) {
+                var ajson =JSON.parse(data);
+                if(ajson.code===1){
+                    layer.msg(ajson.msg);
+                }else if(ajson==undefined || ajson.code!==0){
+                    layer.msg("上次错误，请重新上次。");
+                }else{
+                    layer.msg('上传成功', {
+                        offset: '15px'
+                        ,icon: 1
+                        ,time: 1000
+                    }, function(){
+                        document.getElementById("LAY_avatarSrc").value=ajson.msg;
+                    });
+
+                }
+            }
+        })
+    }
+    function inform(data) {
+        $.ajax({
+            url:"/inform",
+            data:{username:$.trim(data.username),
+                nickname:$.trim(data.nickname),
+                headurl:$.trim(data.avatar),
+                cellphone:$.trim(data.cellphone),
+                email:$.trim(data.email),
+            },
+            type:"post",
+            success:function (data) {
+                var ajson =JSON.parse(data);
+                if(ajson.code===1){
+                    layer.msg(ajson.msg);
+                }else if(ajson==undefined || ajson.code!==0){
+                    layer.msg("信息错误，请重新输入。");
+                }else{
+                    layer.msg('修改成功', {
+                        offset: '15px'
+                        ,icon: 1
+                        ,time: 1000
+                    }, function(){
+                        location.href = '/'; //后台主页
+                    });
+                }
+            }
+        })
+    }
+</script>
+<script>
+layui.use('form',function(){
+    var form = layui.form;
+    form.on('submit(setmyinfo)',function (obj) {
+        var as= obj.field;
+        inform(as);
+        return false;
+    });
+});
+</script>
+</body>
+</html>

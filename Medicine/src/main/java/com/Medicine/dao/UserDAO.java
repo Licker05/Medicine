@@ -42,7 +42,9 @@ public interface UserDAO {
     @Delete({"delete from ", TABLE_NAME, " where id=#{id}"})
     void deleteById(int id);
 
-
     @Update({"update ",TABLE_NAME," set name=#{name},nickname=#{nickname},phone=#{phone},email=#{email},level=#{level}  where id=#{id}"})
     void updateInfo(Object object);
+
+    @Update({"update ",TABLE_NAME," set nickname=#{nickname},headurl=#{headurl},phone=#{phone},email=#{email}  where name=#{name}"})
+    void updateSeleInfo(User user);
 }

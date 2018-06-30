@@ -37,4 +37,8 @@ public interface CategoryDAO extends BaseDAO{
 
     @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where id=#{id}"})
     Category selectById(int id);
+
+    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where cname=#{cname}"})
+    Category selectByCname(String cname);
+
 }

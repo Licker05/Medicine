@@ -132,7 +132,7 @@
                             layer.close(index);
                             layer.msg("删除成功", {icon: 6});
                         }else{
-                            layer.msg("删除失败", {icon: 5});
+                            layer.msg(data.msg, {icon: 5});
                         }
                     },"json");
                 });
@@ -189,14 +189,15 @@
                         var url = "updateInfo.User";
                         var args = {
                             "id":rowInfo.id,
-                            "pass":$("#editpass").val()
+                            "pass":$("#editpass").val(),
+                            "level":rowInfo.level
                         };
                         $.post(url, args, function(data) {
                             if(data.state==1){
                                 layer.close(index);
-                                layer.msg("重置成功", {icon: 6});
+                                layer.msg(data.msg, {icon: 6});
                             }else{
-                                layer.msg("重置失败", {icon: 5});
+                                layer.msg(data.msg, {icon: 5});
                             }
                         },"json");
                     }

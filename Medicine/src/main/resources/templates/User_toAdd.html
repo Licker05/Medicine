@@ -43,7 +43,7 @@
         <label class="layui-form-label">重复密码</label>
         <div class="layui-input-block">
             <input name="repassword" class="layui-input" type="password"
-                   placeholder="请输入密码" autocomplete="on" lay-verify="required">
+                   placeholder="请输入重复密码" autocomplete="on" lay-verify="required">
         </div>
     </div>
     <div class="layui-form-item">
@@ -85,10 +85,18 @@
         var $ = layui.jquery;
         form.on('submit(addManger)', function(obj) {
             var url = "addInfo.User";
-            if($('#password').val()!=$('#repassword').val())
+            if($("input[name='password']").val()!=$("input[name='repassword']").val())
             {
                 layer.msg("两次密码不一致", {icon: 5});
-                return ;
+                return false;
+            }
+            if($("input[name='name']").val().trim().length<6 || $("input[name='name']").val().trim().length>16){
+                layer.msg("用户名必须大于等于6位小于等于16位", {icon: 5});
+                return false;
+            }
+            if($("input[name='password']").val().trim().length<6 || $("input[name='password']").val().trim().length>16){
+                layer.msg("密码必须大于等于6位小于等于16位", {icon: 5});
+                return false;
             }
             var args = {
                 "id":obj.field.id,
@@ -101,9 +109,15 @@
             };
             $.post(url, args, function(data) {
                 if (data.state == 1){
-                    location.href = "/Category_selectByPage";
+                    layer.msg('添加用户成功', {
+                        offset: '15px'
+                        ,icon: 1
+                        ,time: 1000
+                    }, function(){
+                        location.href = '/Category_selectByPage'; //后台主页
+                    });
                 }else{
-                    layer.msg('新增失败');
+                    layer.msg(data.msg,{icon:5});
                 }
             },"json");
             return false;

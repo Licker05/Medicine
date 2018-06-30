@@ -107,6 +107,14 @@ public class User {
         this.level = level;
     }
 
+    public User(String name, String nickname, String headurl, String phone, String email) {
+        this.name = name;
+        this.nickname = nickname;
+        this.headurl = headurl;
+        this.phone = phone;
+        this.email = email;
+    }
+
     private String name;
     private String nickname;
     private String password;

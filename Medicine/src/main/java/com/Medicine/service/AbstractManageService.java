@@ -4,10 +4,7 @@ import com.Medicine.dao.CategoryDAO;
 import com.Medicine.dao.DrugDAO;
 import com.Medicine.dao.SaleDAO;
 import com.Medicine.dao.UserDAO;
-import com.Medicine.model.Category;
-import com.Medicine.model.Drug;
-import com.Medicine.model.Page;
-import com.Medicine.model.User;
+import com.Medicine.model.*;
 import com.Medicine.utils.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +23,8 @@ public abstract class AbstractManageService {
     SaleDAO saleDAO;
     @Autowired
     UserDAO userDAO;
+    @Autowired
+    HostHolder hostHolder;
     public String getAllMes(Class type,int limit, int offset){
         try{
             List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
@@ -53,7 +52,7 @@ public abstract class AbstractManageService {
             return null;
         }
     }
-    public boolean DeleteById(Class type,int id){
+    public String DeleteById(Class type,int id){
         try{
             if(type.getSimpleName().equals("Drug"))
                 drugDAO.deleteById(id);
@@ -61,12 +60,25 @@ public abstract class AbstractManageService {
                 categoryDAO.deleteById(id);
             else if(type.getSimpleName().equals("Sale"))
                 saleDAO.deleteById(id);
-            else if(type.getSimpleName().equals("User"))
-                userDAO.deleteById(id);
-            return true;
+            else if(type.getSimpleName().equals("User")){
+
+                if(hostHolder.getUser().getId()==id){
+                    return JSONUtil.getObjectJSONString(0,"msg","不可以删除当前登录用户");
+                }else{
+                    User user = userDAO.selectById(id);
+                    if(user.getLevel().equals("最高权限")){
+                        return JSONUtil.getObjectJSONString(0,"msg","不可以删除最高权限用户");
+                    }
+                    if(user.getLevel().equals("管理员") && hostHolder.getUser().getLevel().equals("管理员")){
+                        return JSONUtil.getObjectJSONString(0,"msg","权限不足,请联系最高权限");
+                    }
+                    userDAO.deleteById(id);
+                }
+            }
+            return JSONUtil.getObjectJSONString(1,"msg","成功");
         }catch (Exception e){
             e.printStackTrace();
-            return false;
+            return JSONUtil.getObjectJSONString(0,"msg","服务器错误");
         }
     }
     public Object selectById(Class type,int id){
@@ -112,25 +124,37 @@ public abstract class AbstractManageService {
             return null;
         }
     }
-    public boolean addObject(Object object){
+    public String addObject(Object object){
         try{
             if(object.getClass().getSimpleName().equals("Category")){
-                categoryDAO.addCategory(object);
+                if((categoryDAO.selectByCname(((Category)object).getCname())!=null))
+                    return JSONUtil.getObjectJSONString(0,"msg","你所增加的药品类别已经存在");
+                else
+                    categoryDAO.addCategory(object);
             }else if(object.getClass().getSimpleName().equals("Drug")){
-                drugDAO.addDrug(object);
+                if((drugDAO.selectByDrugName(((Drug)object).getDrugname())!=null))
+                    return JSONUtil.getObjectJSONString(0,"msg","你所增加的药品已经存在");
+                else
+                    drugDAO.addDrug(object);
             }else if(object.getClass().getSimpleName().equals("Sale")){
                 saleDAO.addSale(object);
             }else if(object.getClass().getSimpleName().equals("User")){
-                userDAO.addUser(object);
+                if(((User)object).getLevel().equals("管理员") && hostHolder.getUser().getLevel().equals("管理员")){
+                    return JSONUtil.getObjectJSONString(0,"msg","你的权限不足,无法新增管理员");
+                }else{
+                    if(userDAO.selectByName(((User)object).getName())!=null){
+                        return JSONUtil.getObjectJSONString(0,"msg","对不起,该用户名已经存在");
+                    }else
+                        userDAO.addUser(object);
+                }
             }
-            return true;
+            return JSONUtil.getObjectJSONString(1,"msg","新增成功");
         }catch (Exception e){
             e.printStackTrace();
-            return false;
+            return JSONUtil.getObjectJSONString(0,"msg","新增失败");
         }
-
     }
-    public boolean updateInfo(Object object) {
+    public String updateInfo(Object object) {
         try{
             if(object.getClass().getSimpleName().equals("Category")){
                 categoryDAO.updateInfo(object);
@@ -140,18 +164,23 @@ public abstract class AbstractManageService {
                 saleDAO.updateInfo(object);
             }else if(object.getClass().getSimpleName().equals("User")){
                 if(((User)object).getName()==null){
+                    if(((User)object).getLevel().equals("管理员") && hostHolder.getUser().getLevel().equals("管理员"))
+                        return JSONUtil.getObjectJSONString(0,"msg","你的权限不足,无法重置管理员密码");
                     String newPass = ((User)object).getPassword();
                     User user = userDAO.selectById(((User)object).getId());
                     user.setPassword(JSONUtil.MD5(newPass+user.getSalt()));
                     userDAO.updatePassword(user);
                 }else{
-                    userDAO.updateInfo(object);
+                    if(((User)object).getLevel().equals("管理员") && hostHolder.getUser().getLevel().equals("管理员"))
+                        return JSONUtil.getObjectJSONString(0,"msg","你的权限不足,无法新增管理员");
+                    else
+                        userDAO.updateInfo(object);
                 }
             }
-            return true;
+            return JSONUtil.getObjectJSONString(1,"msg","成功");
         }catch (Exception e){
             e.printStackTrace();
-            return false;
+            return JSONUtil.getObjectJSONString(0,"msg","服务器错误");
         }
     }
 }

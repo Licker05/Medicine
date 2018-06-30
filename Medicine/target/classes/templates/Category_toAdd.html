@@ -56,7 +56,7 @@
                 if (data.state == 1){
                     location.href = "/Category_selectByPage";
                 }else{
-                    layer.msg('新增失败');
+                    layer.msg(data.msg,{icon:5});
                 }
             },"json");
             return false;

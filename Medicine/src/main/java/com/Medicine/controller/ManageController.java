@@ -48,11 +48,7 @@ public class ManageController {
                              HttpServletResponse response){
         JSONObject jsonObject = new JSONObject();
         try {
-            if(manageService.DeleteById(Class.forName("com.Medicine.model."+type),id)){
-                return JSONUtil.getStateString(1);
-            }else{
-                return JSONUtil.getStateString(0);
-            }
+            return manageService.DeleteById(Class.forName("com.Medicine.model."+type),id);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return null;
@@ -68,11 +64,7 @@ public class ManageController {
         JSONObject jsonObject  = new JSONObject();
         Object object = GetModelInfoUtil.getModelInfo(type,request);
         try {
-            if(manageService.addObject(object)){
-                return JSONUtil.getStateString(1);
-            }else{
-                return JSONUtil.getStateString(0);
-            }
+            return manageService.addObject(object);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -92,9 +84,9 @@ public class ManageController {
             Class typeClass = Class.forName("com.Medicine.model."+type);
             if(likeValue!=null && likeValue.trim().length()>0){
                 likeValue = request.getParameter("likevalue");
-                return manageService.getAllMesByValue(typeClass,likeValue,limit,(page-1)*10);
+                return manageService.getAllMesByValue(typeClass,likeValue,limit,(page-1)*limit);
             }else{
-                return manageService.getAllMes(typeClass,limit,(page-1)*10);
+                return manageService.getAllMes(typeClass,limit,(page-1)*limit);
             }
 
         } catch (ClassNotFoundException e) {
@@ -110,9 +102,6 @@ public class ManageController {
                           HttpServletResponse response){
         JSONObject jsonObject  = new JSONObject();
         Object object = GetModelInfoUtil.getModelInfo(type,request);
-        if(manageService.updateInfo(object)==true){
-            return JSONUtil.getStateString(1);
-        }
-        return JSONUtil.getStateString(0);
+        return manageService.updateInfo(object);
     }
 }

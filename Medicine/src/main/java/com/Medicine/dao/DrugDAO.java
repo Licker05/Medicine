@@ -25,6 +25,9 @@ public interface DrugDAO extends BaseDAO{
     @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where drugid=#{id}"})
     Drug selectById(int id);
 
+    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where drugname=#{drugname}"})
+    Drug selectByDrugName(String drugname);
+
     @Select({"select count(*) from ",TABLE_NAME," where drugid like CONCAT(CONCAT('%', #{likeValue}),'%') or drugname like CONCAT(CONCAT('%', #{likeValue}),'%') or categoryname like CONCAT(CONCAT('%', #{likeValue}),'%')"})
     int selectCountByValue(String likeValue);
 
