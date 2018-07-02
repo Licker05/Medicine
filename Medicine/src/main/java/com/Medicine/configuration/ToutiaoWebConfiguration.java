@@ -26,7 +26,8 @@ public class ToutiaoWebConfiguration extends WebMvcConfigurerAdapter {
                 addPathPatterns("/User*").
                 addPathPatterns("/Drug*").
                 addPathPatterns("/Category*").
-                addPathPatterns("/Buy*").addPathPatterns("/user/info/*");
+                addPathPatterns("/Buy*").
+                addPathPatterns("/user/info/*");
         super.addInterceptors(registry);
     }
 }

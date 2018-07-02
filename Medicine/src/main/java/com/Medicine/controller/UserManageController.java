@@ -34,6 +34,11 @@ public class UserManageController {
         return "info";
     }
 
+    @RequestMapping(path = {"/updatepass"}, method = {RequestMethod.GET, RequestMethod.POST})
+    public String UpdatePass() {
+        return "updatepass";
+    }
+
     @RequestMapping(path = "/User_toEdit{id}",method = {RequestMethod.GET,RequestMethod.POST})
     public ModelAndView EdiUser(@PathVariable("id") int id,
             HttpServletResponse response){
@@ -89,6 +94,24 @@ public class UserManageController {
             return JSONUtil.getJSONString(0, fileUrl);
         } catch (Exception e) {
             return JSONUtil.getJSONString(1, "上传失败");
+        }
+    }
+
+    @RequestMapping(path = {"/user/updatePass"},method = {RequestMethod.GET,RequestMethod.POST})
+    @ResponseBody
+    public String updatePass(Model model,
+                             @RequestParam("userId") int userId,
+                             @RequestParam("oldPass") String oldPass,
+                             @RequestParam("newPass") String newPass,
+                             HttpServletResponse response){
+        User user = userDAO.selectById(userId);
+        String salt = user.getSalt();
+        if(JSONUtil.MD5(oldPass+salt).equals(user.getPassword())){
+            user.setPassword(JSONUtil.MD5(newPass+salt));
+            userDAO.updatePassword(user);
+            return JSONUtil.getJSONString(0,"修改成功");
+        }else{
+            return JSONUtil.getJSONString(-1,"旧密码错误");
         }
     }
 }

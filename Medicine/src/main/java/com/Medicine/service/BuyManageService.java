@@ -14,6 +14,7 @@ import java.util.Date;
 public class BuyManageService extends AbstractManageService implements IManageService {
     @Autowired
     DrugDAO drugDAO;
+
     public int selectQuantity(int drugid){
         return  drugDAO.selectQtityById(drugid);
     }

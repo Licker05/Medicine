@@ -37,12 +37,14 @@ public class BuyManageController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         double price = editQuantity * drugPice;
         Sale sale = new Sale(sdf.format(new Date()),drugnumber,editQuantity,price,hostHolder.getUser().getId());
-        if(buyManageService.selectQuantity(drugid)>=editQuantity){
-            buyManageService.updateQuantity(editQuantity,drugid);
-            buyManageService.addObject(sale);
-            return JSONUtil.getObjectJSONString(1,"quantity",buyManageService.selectQuantity(drugid));
-        }else {
-            return JSONUtil.getStateString(0);
+        synchronized (this){
+            if(buyManageService.selectQuantity(drugid)>=editQuantity){
+                buyManageService.updateQuantity(editQuantity,drugid);
+                buyManageService.addObject(sale);
+                return JSONUtil.getObjectJSONString(1,"quantity",buyManageService.selectQuantity(drugid));
+            }else {
+                return JSONUtil.getStateString(0);
+            }
         }
     }
 }
