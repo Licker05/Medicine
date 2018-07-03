@@ -1,5 +1,9 @@
 package com.Medicine.model;
 
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.Date;
 
 public class Drug {
@@ -80,7 +84,7 @@ public class Drug {
         this.categoryname = categoryname;
     }
 
-    private int drugid;
+
 
     public Drug(String drugnumber, String drugname, double drugPice, int quantity, String productdate, String producer, String categoryname) {
         this.drugnumber = drugnumber;
@@ -92,11 +96,24 @@ public class Drug {
         this.categoryname = categoryname;
     }
 
+    //药品ID
+    private int drugid;
+    //药品编号
     private String drugnumber;
+    //药品名称
     private String drugname;
+    //药品价格
+//    @DecimalMin(value = "0",message="商品价格错误")
+//    @DecimalMax(value = "0x7fffffff",message="商品价格错误")
     private double drugPice;
+    //药品库存
+//    @Min(value = 0,message="商品数量错误")
+//    @Max(value = Integer.MAX_VALUE,message="商品数量错误")
     private int quantity;
+    //生产日期
     private String productdate;
+    //产商
     private String producer;
+    //类别名称
     private String categoryname;
 }

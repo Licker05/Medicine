@@ -102,6 +102,13 @@
         form.on('submit(addDrug)', function(obj) {
             console.log("123");
             var url = "addInfo.Drug";
+            if(obj.field.drugPice<0 || obj.field.drugPice>0x7fffffff){
+                layer.msg("商品价格不正确",{icon:5});
+                return false;
+            }else if(obj.field.quantity<0 || obj.field.quantity>0x7fffffff){
+                layer.msg("商品数量不正确",{icon:5});
+                return false;
+            }
             var args = {
                 "drugnumber":obj.field.drugnumber,
                 "drugname":obj.field.drugname,

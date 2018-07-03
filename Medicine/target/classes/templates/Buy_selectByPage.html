@@ -167,10 +167,10 @@
                                 obj.update({
                                     quantity: data.quantity
                                 });
-                                layer.msg("购买成功");
+                                layer.msg("购买成功",{icon:6});
 
                             }else{
-                                layer.msg("库存不足，购买失败");
+                                layer.msg("库存不足，购买失败",{icon:5});
                             }
                         },"json")
                     }
