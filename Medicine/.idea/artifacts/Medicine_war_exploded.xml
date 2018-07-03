@@ -64,6 +64,7 @@
           <element id="library" level="project" name="Maven: javax.mail:javax.mail-api:1.6.0" />
           <element id="library" level="project" name="Maven: com.alibaba:fastjson:1.2.13" />
           <element id="library" level="project" name="Maven: org.springframework:spring-core:4.2.8.RELEASE" />
+          <element id="library" level="project" name="Maven: com.alibaba:druid:1.1.9" />
           <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.39" />
           <element id="library" level="project" name="Maven: org.mybatis.spring.boot:mybatis-spring-boot-starter:1.1.1" />
           <element id="library" level="project" name="Maven: org.mybatis.spring.boot:mybatis-spring-boot-autoconfigure:1.1.1" />

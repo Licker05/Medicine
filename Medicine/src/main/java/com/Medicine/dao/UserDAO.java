@@ -18,6 +18,9 @@ public interface UserDAO {
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where name like CONCAT(CONCAT('%', #{likeValue}),'%') or nickname like CONCAT(CONCAT('%', #{likeValue}),'%') or phone like CONCAT(CONCAT('%', #{likeValue}),'%') limit #{limit} offset #{offset}"})
     List<User> selectByLikeValue(Page page);
 
+    @Select({"select * from ",TABLE_NAME})
+    List<User> selectAll();
+
     @Select({"select count(*) from ",TABLE_NAME," where name like CONCAT(CONCAT('%', #{likeValue}),'%') or nickname like CONCAT(CONCAT('%', #{likeValue}),'%') or phone like CONCAT(CONCAT('%', #{likeValue}),'%')"})
     int selectCountByValue(String likeValue);
 

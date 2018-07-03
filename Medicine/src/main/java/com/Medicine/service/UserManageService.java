@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserManageService extends AbstractManageService implements IManageService{
+public class UserManageService extends AbstractManageService{
     @Autowired
     UserDAO userDAO;
     public String updateSelfInfo(User user){

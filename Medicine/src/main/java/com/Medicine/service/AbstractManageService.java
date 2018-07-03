@@ -6,6 +6,7 @@ import com.Medicine.dao.SaleDAO;
 import com.Medicine.dao.UserDAO;
 import com.Medicine.model.*;
 import com.Medicine.utils.JSONUtil;
+import com.Medicine.utils.JedisAdapter;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractManageService {
+public abstract class AbstractManageService implements IManageService{
     @Autowired
     CategoryDAO categoryDAO;
     @Autowired
@@ -25,6 +26,8 @@ public abstract class AbstractManageService {
     UserDAO userDAO;
     @Autowired
     HostHolder hostHolder;
+    @Autowired
+    JedisAdapter jedisAdapter;
     public String getAllMes(Class type,int limit, int offset){
         try{
             List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
@@ -56,12 +59,19 @@ public abstract class AbstractManageService {
         try{
             if(type.getSimpleName().equals("Drug"))
                 drugDAO.deleteById(id);
-            else if(type.getSimpleName().equals("Category"))
-                categoryDAO.deleteById(id);
+            else if(type.getSimpleName().equals("Category")){
+                Category category = categoryDAO.selectById(id);
+                String categoryname = category.getCname();
+                List<Drug> drugs = drugDAO.selectByCategoryName(categoryname);
+                if(drugs.isEmpty()){
+                    categoryDAO.deleteById(id);
+                }else{
+                    return JSONUtil.getObjectJSONString(0,"msg","当前类别下存在药品,请先删除");
+                }
+            }
             else if(type.getSimpleName().equals("Sale"))
                 saleDAO.deleteById(id);
             else if(type.getSimpleName().equals("User")){
-
                 if(hostHolder.getUser().getId()==id){
                     return JSONUtil.getObjectJSONString(0,"msg","不可以删除当前登录用户");
                 }else{
@@ -73,6 +83,7 @@ public abstract class AbstractManageService {
                         return JSONUtil.getObjectJSONString(0,"msg","权限不足,请联系最高权限");
                     }
                     userDAO.deleteById(id);
+                    jedisAdapter.srem("userset",user.getName());
                 }
             }
             return JSONUtil.getObjectJSONString(1,"msg","成功");
@@ -145,6 +156,7 @@ public abstract class AbstractManageService {
                     if(userDAO.selectByName(((User)object).getName())!=null){
                         return JSONUtil.getObjectJSONString(0,"msg","对不起,该用户名已经存在");
                     }else
+                        jedisAdapter.sadd("userset",((User)object).getName());
                         userDAO.addUser(object);
                 }
             }

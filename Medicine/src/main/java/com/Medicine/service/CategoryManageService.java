@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class CategoryManageService extends AbstractManageService implements IManageService{
+public class CategoryManageService extends AbstractManageService{
     @Autowired
     private CategoryDAO categoryDAO;
     public List<String> getCategoryTypes(){

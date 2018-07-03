@@ -25,6 +25,9 @@ public interface DrugDAO extends BaseDAO{
     @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where drugid=#{id}"})
     Drug selectById(int id);
 
+    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where categoryname=#{categoryname}"})
+    List<Drug> selectByCategoryName(String categoryname);
+
     @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where drugname=#{drugname}"})
     Drug selectByDrugName(String drugname);
 

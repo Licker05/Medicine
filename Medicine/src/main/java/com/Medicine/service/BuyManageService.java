@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Service
-public class BuyManageService extends AbstractManageService implements IManageService {
+public class BuyManageService extends AbstractManageService {
     @Autowired
     DrugDAO drugDAO;
 
